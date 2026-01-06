@@ -143,8 +143,15 @@ export class Logger {
   /**
    * Log warning message
    */
-  static warn(message: string, metadata?: LogMetadata): void {
-    winstonLogger.warn(message, Logger.getMetadata(metadata));
+  static warn(message: string, error?: Error | LogMetadata, metadata?: LogMetadata): void {
+    const meta = Logger.getMetadata(metadata);
+    if (error instanceof Error) {
+      winstonLogger.warn(message, { ...meta, error: error.message, stack: error.stack });
+    } else if (error) {
+      winstonLogger.warn(message, { ...meta, ...error });
+    } else {
+      winstonLogger.warn(message, meta);
+    }
   }
 
   /**

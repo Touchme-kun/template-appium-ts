@@ -1,5 +1,9 @@
+import { $, browser, driver } from '@wdio/globals';
 import type { WaitOptions } from '../types/framework.types';
 import { Logger } from '../utils/Logger';
+
+// Type alias for WebdriverIO element (v9 compatible)
+type WdioElement = Awaited<ReturnType<typeof $>>;
 
 /**
  * Wait Helper class
@@ -12,7 +16,7 @@ export class WaitHelper {
   /**
    * Wait for element to be displayed
    */
-  static async waitForDisplayed(selector: string, options: WaitOptions = {}): Promise<WebdriverIO.Element> {
+  static async waitForDisplayed(selector: string, options: WaitOptions = {}): Promise<WdioElement> {
     const timeout = options.timeout || WaitHelper.DEFAULT_TIMEOUT;
     const interval = options.interval || WaitHelper.DEFAULT_INTERVAL;
     const timeoutMsg = options.timeoutMsg || `Element ${selector} not displayed within ${timeout}ms`;
@@ -29,7 +33,7 @@ export class WaitHelper {
   /**
    * Wait for element to exist in DOM
    */
-  static async waitForExist(selector: string, options: WaitOptions = {}): Promise<WebdriverIO.Element> {
+  static async waitForExist(selector: string, options: WaitOptions = {}): Promise<WdioElement> {
     const timeout = options.timeout || WaitHelper.DEFAULT_TIMEOUT;
     const interval = options.interval || WaitHelper.DEFAULT_INTERVAL;
     const timeoutMsg = options.timeoutMsg || `Element ${selector} does not exist within ${timeout}ms`;
@@ -46,7 +50,7 @@ export class WaitHelper {
   /**
    * Wait for element to be clickable
    */
-  static async waitForClickable(selector: string, options: WaitOptions = {}): Promise<WebdriverIO.Element> {
+  static async waitForClickable(selector: string, options: WaitOptions = {}): Promise<WdioElement> {
     const timeout = options.timeout || WaitHelper.DEFAULT_TIMEOUT;
     const interval = options.interval || WaitHelper.DEFAULT_INTERVAL;
     const timeoutMsg = options.timeoutMsg || `Element ${selector} not clickable within ${timeout}ms`;
@@ -63,7 +67,7 @@ export class WaitHelper {
   /**
    * Wait for element to be enabled
    */
-  static async waitForEnabled(selector: string, options: WaitOptions = {}): Promise<WebdriverIO.Element> {
+  static async waitForEnabled(selector: string, options: WaitOptions = {}): Promise<WdioElement> {
     const timeout = options.timeout || WaitHelper.DEFAULT_TIMEOUT;
     const interval = options.interval || WaitHelper.DEFAULT_INTERVAL;
     const timeoutMsg = options.timeoutMsg || `Element ${selector} not enabled within ${timeout}ms`;

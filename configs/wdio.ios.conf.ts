@@ -1,19 +1,23 @@
-import { config as baseConfig } from './wdio.conf';
-import type { Options } from '@wdio/types';
+import { config as baseConfig, rootDir } from './wdio.conf';
+import { browser } from '@wdio/globals';
+import type { Options, Capabilities } from '@wdio/types';
 import * as path from 'path';
 
 /**
  * iOS-specific WebdriverIO Configuration
  * Extends base configuration with iOS capabilities
  */
-export const config: Options.Testrunner = {
+export const config: Options.Testrunner & { capabilities: Capabilities.TestrunnerCapabilities } = {
   ...baseConfig,
 
   //
   // ==================
   // Specify Test Files
   // ==================
-  specs: ['./tests/specs/ios/**/*.spec.ts', './tests/specs/**/*.spec.ts'],
+  specs: [
+    path.join(rootDir, 'tests/specs/ios/**/*.spec.ts'),
+    path.join(rootDir, 'tests/specs/**/*.spec.ts'),
+  ],
 
   //
   // ============

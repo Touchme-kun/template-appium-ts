@@ -1,14 +1,19 @@
-import { config as baseConfig } from './wdio.conf';
-import type { Options } from '@wdio/types';
+import { config as baseConfig, rootDir } from './wdio.conf';
+import { browser } from '@wdio/globals';
+import type { Options, Capabilities } from '@wdio/types';
+import * as path from 'path';
 
 /**
  * BrowserStack WebdriverIO Configuration
  * Extends base configuration for cloud testing on BrowserStack
  */
 
-// Parse platform from command line args
+// Parse platform from environment variable or command line args
 const platformArg = process.argv.find((arg) => arg.startsWith('--platform='));
-const platform = platformArg ? platformArg.split('=')[1] : 'android';
+const platform = process.env.BROWSERSTACK_PLATFORM || 
+                 (platformArg ? platformArg.split('=')[1] : 'android');
+
+console.log(`🚀 BrowserStack Platform: ${platform}`);
 
 // Build name with timestamp
 const buildName = `Build-${process.env.BUILD_NUMBER || new Date().toISOString().split('T')[0]}`;
@@ -120,7 +125,7 @@ const getCapabilities = (): any[] => {
   }
 };
 
-export const config: Options.Testrunner = {
+export const config: Options.Testrunner & { capabilities: Capabilities.TestrunnerCapabilities } = {
   ...baseConfig,
 
   //
@@ -140,7 +145,7 @@ export const config: Options.Testrunner = {
   // ==================
   // Specify Test Files
   // ==================
-  specs: ['./tests/specs/**/*.spec.ts'],
+  specs: [path.join(rootDir, 'tests/specs/**/*.spec.ts')],
 
   //
   // ============

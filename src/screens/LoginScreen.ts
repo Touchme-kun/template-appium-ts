@@ -1,3 +1,4 @@
+import { $ } from '@wdio/globals';
 import { BaseScreen } from './BaseScreen';
 import type { Locator } from '../types/framework.types';
 import { Logger } from '../utils/Logger';

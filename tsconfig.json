@@ -27,9 +27,8 @@
     "noFallthroughCasesInSwitch": true,
     "types": [
       "node",
-      "@wdio/globals/types",
+      "@wdio/globals",
       "@wdio/mocha-framework",
-      "@wdio/cucumber-framework",
       "expect-webdriverio"
     ],
     "baseUrl": ".",

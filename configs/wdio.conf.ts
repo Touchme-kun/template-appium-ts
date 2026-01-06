@@ -1,32 +1,31 @@
-import type { Options } from '@wdio/types';
+import type { Options, Capabilities } from '@wdio/types';
+import { browser } from '@wdio/globals';
 import * as dotenv from 'dotenv';
+import * as path from 'path';
 
 // Load environment variables
 dotenv.config();
+
+// Root directory (one level up from configs/)
+export const rootDir = path.resolve(__dirname, '..');
 
 /**
  * Base WebdriverIO Configuration
  * This configuration serves as the foundation for all platform-specific configs
  */
-export const config: Options.Testrunner = {
+export const config: Options.Testrunner & { capabilities: Capabilities.TestrunnerCapabilities } = {
   //
   // ====================
   // Runner Configuration
   // ====================
   runner: 'local',
-  autoCompileOpts: {
-    autoCompile: true,
-    tsNodeOpts: {
-      project: './tsconfig.json',
-      transpileOnly: true,
-    },
-  },
+  tsConfigPath: path.join(rootDir, 'tsconfig.json'),
 
   //
   // ==================
   // Specify Test Files
   // ==================
-  specs: ['./tests/specs/**/*.spec.ts'],
+  specs: [path.join(rootDir, 'tests/specs/**/*.spec.ts')],
   exclude: [],
 
   //
@@ -55,7 +54,7 @@ export const config: Options.Testrunner = {
   mochaOpts: {
     ui: 'bdd',
     timeout: 120000,
-    require: ['ts-node/register'],
+    // Note: ts-node/register not needed in WDIO v9 - uses tsx internally
   },
 
   //
@@ -87,7 +86,7 @@ export const config: Options.Testrunner = {
     [
       'allure',
       {
-        outputDir: 'allure-results',
+        outputDir: path.join(rootDir, 'allure-results'),
         disableWebdriverStepsReporting: true,
         disableWebdriverScreenshotsReporting: false,
         useCucumberStepReporter: false,
@@ -110,7 +109,7 @@ export const config: Options.Testrunner = {
           relaxedSecurity: true,
           allowInsecure: ['chromedriver_autodownload'],
         },
-        logPath: './logs/',
+        logPath: path.join(rootDir, 'logs'),
       },
     ],
   ],
@@ -160,7 +159,8 @@ export const config: Options.Testrunner = {
       const screenshotName = `${test.title.replace(/\s+/g, '_')}_${timestamp}`;
       
       try {
-        await browser.saveScreenshot(`./reports/screenshots/${screenshotName}.png`);
+        const screenshotPath = path.join(rootDir, 'reports', 'screenshots', `${screenshotName}.png`);
+        await browser.saveScreenshot(screenshotPath);
         console.log(`Screenshot saved: ${screenshotName}.png`);
       } catch (e) {
         console.log('Failed to capture screenshot:', e);

@@ -1,5 +1,9 @@
+import { $, browser, driver } from '@wdio/globals';
 import type { SwipeOptions } from '../types/framework.types';
 import { Logger } from '../utils/Logger';
+
+// Type alias for WebdriverIO element (v9 compatible)
+type WdioElement = Awaited<ReturnType<typeof $>>;
 
 /**
  * Gesture Helper class
@@ -73,7 +77,7 @@ export class GestureHelper {
   /**
    * Swipe left on the screen or element
    */
-  static async swipeLeft(element?: WebdriverIO.Element, options: SwipeOptions = {}): Promise<void> {
+  static async swipeLeft(element?: WdioElement, options: SwipeOptions = {}): Promise<void> {
     const { startPercentage = 0.9, endPercentage = 0.1, duration = 500 } = options;
 
     Logger.debug('Performing swipe left');
@@ -115,7 +119,7 @@ export class GestureHelper {
   /**
    * Swipe right on the screen or element
    */
-  static async swipeRight(element?: WebdriverIO.Element, options: SwipeOptions = {}): Promise<void> {
+  static async swipeRight(element?: WdioElement, options: SwipeOptions = {}): Promise<void> {
     const { startPercentage = 0.1, endPercentage = 0.9, duration = 500 } = options;
 
     Logger.debug('Performing swipe right');
@@ -157,7 +161,7 @@ export class GestureHelper {
   /**
    * Long press on an element
    */
-  static async longPress(element: WebdriverIO.Element, durationMs = 2000): Promise<void> {
+  static async longPress(element: WdioElement, durationMs = 2000): Promise<void> {
     Logger.debug(`Performing long press for ${durationMs}ms`);
 
     const location = await element.getLocation();
@@ -186,7 +190,7 @@ export class GestureHelper {
   /**
    * Double tap on an element
    */
-  static async doubleTap(element: WebdriverIO.Element): Promise<void> {
+  static async doubleTap(element: WdioElement): Promise<void> {
     Logger.debug('Performing double tap');
 
     const location = await element.getLocation();
@@ -217,7 +221,7 @@ export class GestureHelper {
   /**
    * Pinch to zoom in
    */
-  static async pinchOpen(element?: WebdriverIO.Element): Promise<void> {
+  static async pinchOpen(element?: WdioElement): Promise<void> {
     Logger.debug('Performing pinch open (zoom in)');
 
     let centerX: number, centerY: number;
@@ -267,7 +271,7 @@ export class GestureHelper {
   /**
    * Pinch to zoom out
    */
-  static async pinchClose(element?: WebdriverIO.Element): Promise<void> {
+  static async pinchClose(element?: WdioElement): Promise<void> {
     Logger.debug('Performing pinch close (zoom out)');
 
     let centerX: number, centerY: number;
@@ -317,7 +321,7 @@ export class GestureHelper {
   /**
    * Scroll to element by swiping
    */
-  static async scrollToElement(selector: string, maxScrolls = 10, direction: 'up' | 'down' = 'up'): Promise<WebdriverIO.Element> {
+  static async scrollToElement(selector: string, maxScrolls = 10, direction: 'up' | 'down' = 'up'): Promise<WdioElement> {
     Logger.debug(`Scrolling to find element: ${selector}`);
 
     for (let i = 0; i < maxScrolls; i++) {
@@ -343,7 +347,7 @@ export class GestureHelper {
   /**
    * Drag and drop
    */
-  static async dragAndDrop(source: WebdriverIO.Element, target: WebdriverIO.Element): Promise<void> {
+  static async dragAndDrop(source: WdioElement, target: WdioElement): Promise<void> {
     Logger.debug('Performing drag and drop');
 
     const sourceLocation = await source.getLocation();

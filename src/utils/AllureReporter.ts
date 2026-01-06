@@ -1,3 +1,4 @@
+import { browser } from '@wdio/globals';
 import allure from '@wdio/allure-reporter';
 import { Logger } from './Logger';
 
@@ -15,7 +16,7 @@ export class AllureReporter {
    * Add a step to the Allure report
    */
   static addStep(stepName: string, status = 'passed'): void {
-    allure.addStep(stepName, {}, status as never);
+    allure.addStep(stepName, { content: '', name: stepName }, status as never);
     Logger.step(stepName);
   }
 

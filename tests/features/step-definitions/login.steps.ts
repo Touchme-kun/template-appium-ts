@@ -1,3 +1,4 @@
+import { expect } from '@wdio/globals';
 import { Given, When, Then } from '@wdio/cucumber-framework';
 import { loginScreen } from '../../../src/screens/LoginScreen';
 import { homeScreen } from '../../../src/screens/HomeScreen';

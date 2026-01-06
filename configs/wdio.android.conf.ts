@@ -1,19 +1,23 @@
-import { config as baseConfig } from './wdio.conf';
-import type { Options } from '@wdio/types';
+import { config as baseConfig, rootDir } from './wdio.conf';
+import { browser } from '@wdio/globals';
+import type { Options, Capabilities } from '@wdio/types';
 import * as path from 'path';
 
 /**
  * Android-specific WebdriverIO Configuration
  * Extends base configuration with Android capabilities
  */
-export const config: Options.Testrunner = {
+export const config: Options.Testrunner & { capabilities: Capabilities.TestrunnerCapabilities } = {
   ...baseConfig,
 
   //
   // ==================
   // Specify Test Files
   // ==================
-  specs: ['./tests/specs/android/**/*.spec.ts', './tests/specs/**/*.spec.ts'],
+  specs: [
+    path.join(rootDir, 'tests/specs/android/**/*.spec.ts'),
+    path.join(rootDir, 'tests/specs/**/*.spec.ts'),
+  ],
 
   //
   // ============

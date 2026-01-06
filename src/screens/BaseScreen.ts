@@ -1,5 +1,9 @@
+import { $, browser, driver } from '@wdio/globals';
 import type { Locator, WaitOptions } from '../types/framework.types';
 import { Logger } from '../utils/Logger';
+
+// Type alias for WebdriverIO element (v9 compatible)
+type WdioElement = Awaited<ReturnType<typeof $>>;
 
 /**
  * Base Screen class for Page Object Model
@@ -46,7 +50,7 @@ export abstract class BaseScreen {
   /**
    * Wait for an element to be displayed
    */
-  async waitForElement(selector: string, options?: WaitOptions): Promise<WebdriverIO.Element> {
+  async waitForElement(selector: string, options?: WaitOptions): Promise<WdioElement> {
     const timeout = options?.timeout || 30000;
     const interval = options?.interval || 500;
     const timeoutMsg = options?.timeoutMsg || `Element ${selector} not found within ${timeout}ms`;
@@ -59,7 +63,7 @@ export abstract class BaseScreen {
   /**
    * Wait for an element to exist in DOM
    */
-  async waitForElementExist(selector: string, options?: WaitOptions): Promise<WebdriverIO.Element> {
+  async waitForElementExist(selector: string, options?: WaitOptions): Promise<WdioElement> {
     const timeout = options?.timeout || 30000;
     const interval = options?.interval || 500;
     const timeoutMsg = options?.timeoutMsg || `Element ${selector} does not exist within ${timeout}ms`;
@@ -72,7 +76,7 @@ export abstract class BaseScreen {
   /**
    * Wait for an element to be clickable
    */
-  async waitForElementClickable(selector: string, options?: WaitOptions): Promise<WebdriverIO.Element> {
+  async waitForElementClickable(selector: string, options?: WaitOptions): Promise<WdioElement> {
     const timeout = options?.timeout || 30000;
     const interval = options?.interval || 500;
     const timeoutMsg = options?.timeoutMsg || `Element ${selector} not clickable within ${timeout}ms`;
@@ -158,7 +162,7 @@ export abstract class BaseScreen {
   /**
    * Scroll to an element
    */
-  async scrollToElement(selector: string, maxScrolls = 5): Promise<WebdriverIO.Element> {
+  async scrollToElement(selector: string, maxScrolls = 5): Promise<WdioElement> {
     Logger.debug(`Scrolling to element: ${selector}`);
     let scrollCount = 0;
 
