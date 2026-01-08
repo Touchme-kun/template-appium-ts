@@ -83,12 +83,6 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-dist
-          path: dist/
-      
       - name: Install dependencies
         run: npm install --legacy-peer-deps
       
@@ -115,7 +109,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-results-android-${{ matrix.device }}-${{ matrix.test_suite }}
+          name: allure-results-android-${{ matrix.test_suite }}-${{ github.run_id }}-${{ strategy.job-index }}
           path: allure-results/
           retention-days: 30
       
@@ -123,7 +117,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: screenshots-android-${{ matrix.device }}-${{ matrix.test_suite }}
+          name: screenshots-android-${{ matrix.test_suite }}-${{ github.run_id }}-${{ strategy.job-index }}
           path: reports/screenshots/
           retention-days: 7
       
@@ -131,7 +125,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: logs-android-${{ matrix.device }}-${{ matrix.test_suite }}
+          name: logs-android-${{ matrix.test_suite }}-${{ github.run_id }}-${{ strategy.job-index }}
           path: logs/
           retention-days: 7
 
@@ -180,7 +174,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-results-ios-${{ matrix.device }}-${{ matrix.test_suite }}
+          name: allure-results-ios-${{ matrix.test_suite }}-${{ github.run_id }}-${{ strategy.job-index }}
           path: allure-results/
           retention-days: 30
       
@@ -188,7 +182,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: screenshots-ios-${{ matrix.device }}-${{ matrix.test_suite }}
+          name: screenshots-ios-${{ matrix.test_suite }}-${{ github.run_id }}-${{ strategy.job-index }}
           path: reports/screenshots/
           retention-days: 7
 
