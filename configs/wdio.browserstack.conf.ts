@@ -132,8 +132,8 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
   // ====================
   // BrowserStack Credentials
   // ====================
-  user: process.env.BROWSERSTACK_USERNAME,
-  key: process.env.BROWSERSTACK_ACCESS_KEY,
+  user: process.env.BROWSERSTACK_USER || process.env.BROWSERSTACK_USERNAME,
+  key: process.env.BROWSERSTACK_KEY || process.env.BROWSERSTACK_ACCESS_KEY,
 
   //
   // ====================
