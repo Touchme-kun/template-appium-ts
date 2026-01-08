@@ -47,10 +47,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
       
       - name: Install dependencies
-        run: npm ci
+        run: npm install --legacy-peer-deps
       
       - name: Run ESLint
         run: npm run lint
@@ -91,7 +90,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
       
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -100,7 +98,7 @@ jobs:
           path: dist/
       
       - name: Install dependencies
-        run: npm ci
+        run: npm install --legacy-peer-deps
       
       - name: Run Android Tests
         env:
@@ -169,7 +167,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
       
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -178,7 +175,7 @@ jobs:
           path: dist/
       
       - name: Install dependencies
-        run: npm ci
+        run: npm install --legacy-peer-deps
       
       - name: Run iOS Tests
         env:
@@ -228,22 +225,17 @@ jobs:
           path: allure-results-combined
           merge-multiple: true
       
-      - name: Setup Java for Allure
-        uses: actions/setup-java@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          distribution: 'temurin'
-          java-version: '11'
+          node-version: ${{ env.NODE_VERSION }}
       
-      - name: Install Allure
-        run: |
-          wget https://github.com/allure-framework/allure2/releases/download/${{ env.ALLURE_VERSION }}/allure-${{ env.ALLURE_VERSION }}.zip
-          unzip allure-${{ env.ALLURE_VERSION }}.zip
-          sudo mv allure-${{ env.ALLURE_VERSION }} /opt/allure
-          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
       
       - name: Generate Allure Report
         run: |
-          allure generate allure-results-combined --clean -o allure-report
+          npx allure-commandline generate allure-results-combined --clean -o allure-report
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
