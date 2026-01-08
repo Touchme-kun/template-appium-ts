@@ -57,19 +57,11 @@ jobs:
       
       - name: Build TypeScript
         run: npm run build
-      
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-dist
-          path: dist/
-          retention-days: 1
 
   # Android Tests on BrowserStack
   test-android:
     name: Android Tests - BrowserStack
     runs-on: ubuntu-latest
-    needs: lint-and-build
     if: |
       github.event_name == 'schedule' ||
       github.event.inputs.platform == 'android' ||
@@ -147,7 +139,6 @@ jobs:
   test-ios:
     name: iOS Tests - BrowserStack
     runs-on: ubuntu-latest
-    needs: lint-and-build
     if: |
       github.event_name == 'schedule' ||
       github.event.inputs.platform == 'ios' ||
@@ -167,12 +158,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-      
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-dist
-          path: dist/
       
       - name: Install dependencies
         run: npm install --legacy-peer-deps
