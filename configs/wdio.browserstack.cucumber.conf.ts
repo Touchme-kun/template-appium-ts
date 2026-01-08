@@ -32,13 +32,12 @@ const getTagExpression = (): string => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const androidCapabilities: any[] = [
   {
-    platformName: 'Android',
     'bstack:options': {
       deviceName: process.env.DEVICE_NAME || 'Samsung Galaxy S23',
-      platformVersion: '13.0',
+      osVersion: '13.0',
       projectName: 'Mobile Automation Framework - BDD',
       buildName: buildName,
-      sessionName: 'Android BDD Tests',
+      sessionName: `Android BDD Tests - ${process.env.DEVICE_NAME || 'Samsung Galaxy S23'}`,
       debug: true,
       networkLogs: true,
       video: true,
@@ -47,6 +46,7 @@ const androidCapabilities: any[] = [
       local: process.env.BROWSERSTACK_LOCAL === 'true',
       idleTimeout: 300,
     },
+    platformName: 'Android',
     'appium:app': process.env.BROWSERSTACK_APP_ID || 'bs://your-app-id',
     'appium:autoGrantPermissions': true,
     'appium:noReset': false,
@@ -58,13 +58,12 @@ const androidCapabilities: any[] = [
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const iosCapabilities: any[] = [
   {
-    platformName: 'iOS',
     'bstack:options': {
-      deviceName: 'iPhone 15 Pro',
-      platformVersion: '17',
+      deviceName: process.env.DEVICE_NAME || 'iPhone 15 Pro',
+      osVersion: '17',
       projectName: 'Mobile Automation Framework - BDD',
       buildName: buildName,
-      sessionName: 'iOS BDD Tests',
+      sessionName: `iOS BDD Tests - ${process.env.DEVICE_NAME || 'iPhone 15 Pro'}`,
       debug: true,
       networkLogs: true,
       video: true,
@@ -73,6 +72,7 @@ const iosCapabilities: any[] = [
       local: process.env.BROWSERSTACK_LOCAL === 'true',
       idleTimeout: 300,
     },
+    platformName: 'iOS',
     'appium:app': process.env.BROWSERSTACK_IOS_APP_ID || 'bs://your-ios-app-id',
     'appium:autoAcceptAlerts': true,
     'appium:noReset': false,

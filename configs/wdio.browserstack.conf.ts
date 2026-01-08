@@ -22,13 +22,12 @@ const buildName = `Build-${process.env.BUILD_NUMBER || new Date().toISOString().
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const androidCapabilities: any[] = [
   {
-    platformName: 'Android',
     'bstack:options': {
       deviceName: process.env.DEVICE_NAME || 'Samsung Galaxy S23',
-      platformVersion: '13.0',
+      osVersion: '13.0',
       projectName: 'Mobile Automation Framework',
       buildName: buildName,
-      sessionName: 'Android Smoke Tests',
+      sessionName: `Android Tests - ${process.env.DEVICE_NAME || 'Samsung Galaxy S23'}`,
       debug: true,
       networkLogs: true,
       video: true,
@@ -37,19 +36,19 @@ const androidCapabilities: any[] = [
       local: process.env.BROWSERSTACK_LOCAL === 'true',
       idleTimeout: 300,
     },
+    platformName: 'Android',
     'appium:app': process.env.BROWSERSTACK_APP_ID || 'bs://your-app-id',
     'appium:autoGrantPermissions': true,
     'appium:noReset': false,
     'appium:automationName': 'UiAutomator2',
   },
   {
-    platformName: 'Android',
     'bstack:options': {
       deviceName: 'Google Pixel 7',
-      platformVersion: '13.0',
+      osVersion: '13.0',
       projectName: 'Mobile Automation Framework',
       buildName: buildName,
-      sessionName: 'Android Pixel Tests',
+      sessionName: 'Android Tests - Google Pixel 7',
       debug: true,
       networkLogs: true,
       video: true,
@@ -57,6 +56,7 @@ const androidCapabilities: any[] = [
       appiumVersion: '2.0.0',
       local: process.env.BROWSERSTACK_LOCAL === 'true',
     },
+    platformName: 'Android',
     'appium:app': process.env.BROWSERSTACK_APP_ID || 'bs://your-app-id',
     'appium:autoGrantPermissions': true,
     'appium:noReset': false,
@@ -68,13 +68,12 @@ const androidCapabilities: any[] = [
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const iosCapabilities: any[] = [
   {
-    platformName: 'iOS',
     'bstack:options': {
       deviceName: 'iPhone 15 Pro',
-      platformVersion: '17',
+      osVersion: '17',
       projectName: 'Mobile Automation Framework',
       buildName: buildName,
-      sessionName: 'iOS iPhone 15 Pro Tests',
+      sessionName: 'iOS Tests - iPhone 15 Pro',
       debug: true,
       networkLogs: true,
       video: true,
@@ -83,6 +82,7 @@ const iosCapabilities: any[] = [
       local: process.env.BROWSERSTACK_LOCAL === 'true',
       idleTimeout: 300,
     },
+    platformName: 'iOS',
     'appium:app': process.env.BROWSERSTACK_IOS_APP_ID || 'bs://your-ios-app-id',
     'appium:autoAcceptAlerts': true,
     'appium:noReset': false,
