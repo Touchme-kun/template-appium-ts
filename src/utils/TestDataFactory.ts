@@ -32,7 +32,7 @@ const randomPassword = (): string => {
   const lower = 'abcdefghijklmnopqrstuvwxyz';
   const numbers = '0123456789';
   const special = '!@#$%^&*';
-  
+
   return [
     upper[Math.floor(Math.random() * upper.length)],
     lower[Math.floor(Math.random() * lower.length)],
@@ -145,7 +145,7 @@ export class TestDataFactory {
     const testCardNumbers = [
       '4111111111111111', // Visa test
       '5555555555554444', // Mastercard test
-      '378282246310005',  // Amex test
+      '378282246310005', // Amex test
     ];
 
     return {
@@ -259,8 +259,18 @@ export class TestDataFactory {
    */
   static randomFirstName(): string {
     const firstNames = [
-      'John', 'Jane', 'Michael', 'Sarah', 'David', 'Emily', 
-      'James', 'Emma', 'Robert', 'Olivia', 'William', 'Sophia'
+      'John',
+      'Jane',
+      'Michael',
+      'Sarah',
+      'David',
+      'Emily',
+      'James',
+      'Emma',
+      'Robert',
+      'Olivia',
+      'William',
+      'Sophia',
     ];
     return firstNames[randomNumber(0, firstNames.length - 1)];
   }
@@ -270,8 +280,18 @@ export class TestDataFactory {
    */
   static randomLastName(): string {
     const lastNames = [
-      'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia',
-      'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Anderson', 'Taylor'
+      'Smith',
+      'Johnson',
+      'Williams',
+      'Brown',
+      'Jones',
+      'Garcia',
+      'Miller',
+      'Davis',
+      'Rodriguez',
+      'Martinez',
+      'Anderson',
+      'Taylor',
     ];
     return lastNames[randomNumber(0, lastNames.length - 1)];
   }

@@ -9,7 +9,7 @@ import { AllureReporter } from '../utils/AllureReporter';
 
 const env = {
   environment: process.env.TEST_ENV || 'development',
-  appiumUrl: `http://${process.env.APPIUM_HOST || 'localhost'}:${process.env.APPIUM_PORT || '4723'}`
+  appiumUrl: `http://${process.env.APPIUM_HOST || 'localhost'}:${process.env.APPIUM_PORT || '4723'}`,
 };
 
 export interface TestContext {
@@ -35,11 +35,11 @@ export class BaseTest {
    */
   static async initializeSuite(suiteName: string): Promise<void> {
     Logger.info(`Initializing test suite: ${suiteName}`);
-    
+
     // Add environment info to Allure
     AllureReporter.addEnvironmentInfo({
-      'Environment': env.environment,
-      'Platform': this.getPlatform(),
+      Environment: env.environment,
+      Platform: this.getPlatform(),
       'Appium URL': env.appiumUrl,
     });
 
@@ -51,7 +51,7 @@ export class BaseTest {
    */
   static async setupTest(testName: string, suiteName: string = 'Default Suite'): Promise<void> {
     const platform = this.getPlatform();
-    
+
     this.context = {
       testName,
       suiteName,
@@ -83,21 +83,17 @@ export class BaseTest {
    */
   static async teardownTest(testPassed: boolean): Promise<void> {
     const duration = this.getTestDuration();
-    
+
     if (!testPassed) {
       Logger.error(`Test failed: ${this.context?.testName}`);
-      
+
       // Capture screenshot on failure
       await AllureReporter.captureScreenshot('Failure Screenshot');
-      
+
       // Capture page source for debugging
       try {
         const pageSource = await browser.getPageSource();
-        AllureReporter.addAttachment(
-          'Page Source',
-          pageSource,
-          'application/xml'
-        );
+        AllureReporter.addAttachment('Page Source', pageSource, 'application/xml');
       } catch (error) {
         Logger.warn('Could not capture page source');
       }
@@ -114,7 +110,7 @@ export class BaseTest {
    */
   static async cleanupSuite(suiteName: string): Promise<void> {
     Logger.info(`Cleaning up test suite: ${suiteName}`);
-    
+
     try {
       // Close any open sessions
       if (browser.sessionId) {
@@ -134,7 +130,7 @@ export class BaseTest {
   static getPlatform(): 'android' | 'ios' {
     try {
       const caps = browser.capabilities as Record<string, unknown>;
-      const platformName = (caps.platformName as string || '').toLowerCase();
+      const platformName = ((caps.platformName as string) || '').toLowerCase();
       return platformName === 'ios' ? 'ios' : 'android';
     } catch {
       return 'android'; // Default to Android
@@ -185,12 +181,12 @@ export class BaseTest {
   static async resetApp(): Promise<void> {
     Logger.info('Resetting app state');
     try {
-      await browser.execute('mobile: terminateApp', { 
-        bundleId: this.getAppIdentifier() 
+      await browser.execute('mobile: terminateApp', {
+        bundleId: this.getAppIdentifier(),
       });
       await browser.pause(1000);
-      await browser.execute('mobile: activateApp', { 
-        bundleId: this.getAppIdentifier() 
+      await browser.execute('mobile: activateApp', {
+        bundleId: this.getAppIdentifier(),
       });
       Logger.info('App reset completed');
     } catch (error) {
@@ -219,8 +215,8 @@ export class BaseTest {
   static async closeApp(): Promise<void> {
     Logger.info('Closing app');
     try {
-      await browser.execute('mobile: terminateApp', { 
-        bundleId: this.getAppIdentifier() 
+      await browser.execute('mobile: terminateApp', {
+        bundleId: this.getAppIdentifier(),
       });
       Logger.info('App closed successfully');
     } catch (error) {
@@ -233,11 +229,11 @@ export class BaseTest {
    */
   static getAppIdentifier(): string {
     const caps = browser.capabilities as Record<string, unknown>;
-    
+
     if (this.isIOS()) {
       return (caps.bundleId || caps['appium:bundleId'] || '') as string;
     }
-    
+
     return (caps.appPackage || caps['appium:appPackage'] || '') as string;
   }
 
@@ -262,7 +258,7 @@ export class BaseTest {
   static async waitForAppReady(timeout: number = 30000): Promise<void> {
     Logger.info('Waiting for app to be ready');
     const startTime = Date.now();
-    
+
     while (Date.now() - startTime < timeout) {
       try {
         // Check if we can interact with the app
@@ -273,7 +269,7 @@ export class BaseTest {
         await browser.pause(500);
       }
     }
-    
+
     throw new Error('App did not become ready within timeout');
   }
 
@@ -282,7 +278,7 @@ export class BaseTest {
    */
   static async getDeviceInfo(): Promise<Record<string, string>> {
     const caps = browser.capabilities as Record<string, unknown>;
-    
+
     return {
       platformName: String(caps.platformName || 'Unknown'),
       platformVersion: String(caps.platformVersion || 'Unknown'),
@@ -333,13 +329,13 @@ export class BaseTest {
   static async switchToWebViewContext(): Promise<void> {
     try {
       const contexts = await browser.getContexts();
-      const webviewContext = contexts.find(ctx => {
+      const webviewContext = contexts.find((ctx) => {
         if (typeof ctx === 'string') {
           return ctx.includes('WEBVIEW');
         }
         return false;
       });
-      
+
       if (webviewContext && typeof webviewContext === 'string') {
         await browser.switchContext(webviewContext);
         Logger.debug(`Switched to ${webviewContext} context`);

@@ -162,8 +162,9 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
     [
       'browserstack',
       {
-        // App upload configuration
-        app: process.env.BROWSERSTACK_APP_PATH || './apps/android/app-release.apk',
+        // Only specify app path if uploading a new app (not using existing bs:// ID)
+        // If BROWSERSTACK_APP_ID is set, the app is already uploaded and specified in capabilities
+        ...(process.env.BROWSERSTACK_APP_PATH ? { app: process.env.BROWSERSTACK_APP_PATH } : {}),
 
         // Local testing
         browserstackLocal: process.env.BROWSERSTACK_LOCAL === 'true',

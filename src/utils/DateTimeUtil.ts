@@ -3,13 +3,7 @@
  * Provides common date operations for test automation
  */
 
-export type DateFormat = 
-  | 'YYYY-MM-DD'
-  | 'MM/DD/YYYY'
-  | 'DD/MM/YYYY'
-  | 'YYYY-MM-DD HH:mm:ss'
-  | 'ISO'
-  | 'timestamp';
+export type DateFormat = 'YYYY-MM-DD' | 'MM/DD/YYYY' | 'DD/MM/YYYY' | 'YYYY-MM-DD HH:mm:ss' | 'ISO' | 'timestamp';
 
 export class DateTimeUtil {
   /**
@@ -183,8 +177,18 @@ export class DateTimeUtil {
    */
   static getMonthName(date: Date = new Date(), short: boolean = false): string {
     const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ];
     const month = months[date.getMonth()];
     return short ? month.substring(0, 3) : month;
@@ -207,7 +211,7 @@ export class DateTimeUtil {
     const dayNum = d.getUTCDay() || 7;
     d.setUTCDate(d.getUTCDate() + 4 - dayNum);
     const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+    return Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
   }
 
   /**
@@ -222,7 +226,7 @@ export class DateTimeUtil {
    * Sleep/wait for specified milliseconds
    */
   static async sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -242,11 +246,11 @@ export class DateTimeUtil {
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    
+
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
-    
+
     return age;
   }
 

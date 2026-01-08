@@ -1,0 +1,179 @@
+version: '3.8'
+
+services:
+  # Appium Server
+  appium:
+    image: appium/appium:latest
+    container_name: appium-server
+    ports:
+      - "4723:4723"
+    environment:
+      - RELAXED_SECURITY=true
+    command: >
+      appium
+      --address 0.0.0.0
+      --port 4723
+      --relaxed-security
+      --allow-insecure chromedriver_autodownload
+      --log-timestamp
+      --log-no-colors
+    networks:
+      - mobile-automation
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4723/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Test Runner - Development
+  test-runner:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: development
+    container_name: mobile-test-runner
+    depends_on:
+      appium:
+        condition: service_healthy
+    environment:
+      # Appium Configuration
+      - APPIUM_HOST=appium
+      - APPIUM_PORT=4723
+      
+      # Test Environment
+      - NODE_ENV=development
+      - TEST_ENV=docker
+      - LOG_LEVEL=info
+      
+      # Platform Configuration (can be overridden)
+      - PLATFORM=${PLATFORM:-android}
+      - DEVICE_NAME=${DEVICE_NAME:-Android Emulator}
+      - PLATFORM_VERSION=${PLATFORM_VERSION:-13}
+      
+      # BrowserStack Credentials (for cloud testing)
+      - BROWSERSTACK_USER=${BROWSERSTACK_USER}
+      - BROWSERSTACK_KEY=${BROWSERSTACK_KEY}
+      - BROWSERSTACK_APP_ID=${BROWSERSTACK_APP_ID}
+      - BROWSERSTACK_IOS_APP_ID=${BROWSERSTACK_IOS_APP_ID}
+    volumes:
+      # Mount source code for live development
+      - ../src:/app/src:ro
+      - ../tests:/app/tests:ro
+      - ../configs:/app/configs:ro
+      
+      # Mount output directories (read-write)
+      - ../reports:/app/reports
+      - ../logs:/app/logs
+      - ../allure-results:/app/allure-results
+      - ../allure-report:/app/allure-report
+      
+      # Mount apps directory for testing
+      - ../apps:/app/apps:ro
+      
+      # Node modules (use container's version)
+      - /app/node_modules
+    networks:
+      - mobile-automation
+    command: npm run test
+    stdin_open: true
+    tty: true
+
+  # Test Runner - Production (for CI/CD)
+  test-runner-prod:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: production
+    container_name: mobile-test-runner-prod
+    depends_on:
+      appium:
+        condition: service_healthy
+    environment:
+      - APPIUM_HOST=appium
+      - APPIUM_PORT=4723
+      - NODE_ENV=production
+      - TEST_ENV=docker
+      - LOG_LEVEL=info
+      - PLATFORM=${PLATFORM:-android}
+      - DEVICE_NAME=${DEVICE_NAME:-Android Emulator}
+      - PLATFORM_VERSION=${PLATFORM_VERSION:-13}
+    volumes:
+      - ../reports:/app/reports
+      - ../logs:/app/logs
+      - ../allure-results:/app/allure-results
+    networks:
+      - mobile-automation
+    command: npm run test
+    profiles:
+      - production
+
+  # Test Runner - BrowserStack (No local Appium needed)
+  test-runner-browserstack:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: development
+    container_name: mobile-test-runner-browserstack
+    environment:
+      # BrowserStack Configuration
+      - BROWSERSTACK_USER=${BROWSERSTACK_USER}
+      - BROWSERSTACK_KEY=${BROWSERSTACK_KEY}
+      - BROWSERSTACK_APP_ID=${BROWSERSTACK_APP_ID}
+      - BROWSERSTACK_IOS_APP_ID=${BROWSERSTACK_IOS_APP_ID}
+      - BROWSERSTACK_PLATFORM=${BROWSERSTACK_PLATFORM:-android}
+      
+      # Test Environment
+      - NODE_ENV=development
+      - TEST_ENV=${TEST_ENV:-qa}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      
+      # Platform Configuration
+      - PLATFORM=${PLATFORM:-android}
+      - DEVICE_NAME=${DEVICE_NAME:-Android Emulator}
+      - PLATFORM_VERSION=${PLATFORM_VERSION:-13}
+    volumes:
+      # Mount source code
+      - ../src:/app/src:ro
+      - ../tests:/app/tests:ro
+      - ../configs:/app/configs:ro
+      
+      # Mount output directories
+      - ../reports:/app/reports
+      - ../logs:/app/logs
+      - ../allure-results:/app/allure-results
+      - ../allure-report:/app/allure-report
+      
+      # Node modules
+      - /app/node_modules
+    networks:
+      - mobile-automation
+    stdin_open: true
+    tty: true
+
+  # Allure Report Server
+  allure:
+    image: frankescobar/allure-docker-service:latest
+    container_name: allure-report-server
+    ports:
+      - "5050:5050"
+      - "5252:5252"
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: 3
+      KEEP_HISTORY: 1
+      KEEP_HISTORY_LATEST: 25
+    volumes:
+      - ../allure-results:/app/allure-results
+      - ../allure-report:/app/allure-report
+    networks:
+      - mobile-automation
+    profiles:
+      - reporting
+
+networks:
+  mobile-automation:
+    driver: bridge
+    name: mobile-automation-network
+
+volumes:
+  node_modules:

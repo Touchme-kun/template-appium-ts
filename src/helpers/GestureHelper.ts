@@ -321,7 +321,11 @@ export class GestureHelper {
   /**
    * Scroll to element by swiping
    */
-  static async scrollToElement(selector: string, maxScrolls = 10, direction: 'up' | 'down' = 'up'): Promise<WdioElement> {
+  static async scrollToElement(
+    selector: string,
+    maxScrolls = 10,
+    direction: 'up' | 'down' = 'up'
+  ): Promise<WdioElement> {
     Logger.debug(`Scrolling to find element: ${selector}`);
 
     for (let i = 0; i < maxScrolls; i++) {

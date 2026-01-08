@@ -112,7 +112,7 @@ export class PerformanceUtil {
       };
     }
 
-    const durations = this.completedMetrics.map(m => m.duration || 0);
+    const durations = this.completedMetrics.map((m) => m.duration || 0);
     const totalDuration = durations.reduce((sum, d) => sum + d, 0);
 
     return {
@@ -129,7 +129,7 @@ export class PerformanceUtil {
    * Get performance summary for specific operation type
    */
   static getSummaryByName(namePattern: string | RegExp): PerformanceSummary {
-    const filtered = this.completedMetrics.filter(m => {
+    const filtered = this.completedMetrics.filter((m) => {
       if (typeof namePattern === 'string') {
         return m.name.includes(namePattern);
       }
@@ -147,7 +147,7 @@ export class PerformanceUtil {
       };
     }
 
-    const durations = filtered.map(m => m.duration || 0);
+    const durations = filtered.map((m) => m.duration || 0);
     const totalDuration = durations.reduce((sum, d) => sum + d, 0);
 
     return {
@@ -194,14 +194,8 @@ export class PerformanceUtil {
   /**
    * Assert that operation completed within threshold
    */
-  static assertWithinThreshold(
-    name: string,
-    thresholdMs: number,
-    actual?: number
-  ): boolean {
-    const metric = actual !== undefined 
-      ? { duration: actual } 
-      : this.completedMetrics.find(m => m.name === name);
+  static assertWithinThreshold(name: string, thresholdMs: number, actual?: number): boolean {
+    const metric = actual !== undefined ? { duration: actual } : this.completedMetrics.find((m) => m.name === name);
 
     if (!metric?.duration) {
       Logger.warn(`No performance data found for: ${name}`);
@@ -209,11 +203,9 @@ export class PerformanceUtil {
     }
 
     const passed = metric.duration <= thresholdMs;
-    
+
     if (!passed) {
-      Logger.warn(
-        `Performance threshold exceeded: ${name} took ${metric.duration}ms (threshold: ${thresholdMs}ms)`
-      );
+      Logger.warn(`Performance threshold exceeded: ${name} took ${metric.duration}ms (threshold: ${thresholdMs}ms)`);
     }
 
     return passed;

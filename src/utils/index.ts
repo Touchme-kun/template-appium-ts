@@ -8,3 +8,4 @@ export * from './DateTimeUtil';
 export * from './ScreenshotUtil';
 export * from './ApiHelper';
 export * from './PerformanceUtil';
+export * from './DeviceLogsHelper';

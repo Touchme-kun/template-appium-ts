@@ -258,10 +258,10 @@ export abstract class BaseScreen {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const fileName = `${name}_${timestamp}.png`;
     const filePath = `./reports/screenshots/${fileName}`;
-    
+
     await browser.saveScreenshot(filePath);
     Logger.info(`Screenshot saved: ${filePath}`);
-    
+
     return filePath;
   }
 }

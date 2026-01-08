@@ -1,0 +1,102 @@
+{
+  "validRegistrations": [
+    {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john.doe@example.com",
+      "password": "SecurePass123!",
+      "phone": "+1234567890"
+    },
+    {
+      "firstName": "Jane",
+      "lastName": "Smith",
+      "email": "jane.smith@example.com",
+      "password": "JanePass123!",
+      "phone": "+1987654321"
+    }
+  ],
+  "existingEmails": [
+    "existing@example.com",
+    "admin@example.com",
+    "test@test.com"
+  ],
+  "passwordStrengthTests": [
+    {
+      "password": "123",
+      "strength": "weak",
+      "error": "Password must be at least 8 characters"
+    },
+    {
+      "password": "password",
+      "strength": "weak",
+      "error": "Password must contain a number"
+    },
+    {
+      "password": "12345678",
+      "strength": "weak",
+      "error": "Password must contain a letter"
+    },
+    {
+      "password": "Pass1234",
+      "strength": "medium",
+      "error": "Password must contain a special character"
+    },
+    {
+      "password": "SecurePass123!",
+      "strength": "strong",
+      "error": null
+    },
+    {
+      "password": "V3ryS3cur3P@ssw0rd!",
+      "strength": "very-strong",
+      "error": null
+    }
+  ],
+  "fieldValidation": {
+    "firstName": {
+      "minLength": 1,
+      "maxLength": 50,
+      "pattern": "^[a-zA-Z\\s'-]+$",
+      "required": true
+    },
+    "lastName": {
+      "minLength": 1,
+      "maxLength": 50,
+      "pattern": "^[a-zA-Z\\s'-]+$",
+      "required": true
+    },
+    "email": {
+      "minLength": 5,
+      "maxLength": 254,
+      "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+      "required": true
+    },
+    "password": {
+      "minLength": 8,
+      "maxLength": 128,
+      "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$",
+      "required": true
+    },
+    "phone": {
+      "minLength": 10,
+      "maxLength": 15,
+      "pattern": "^\\+?[1-9]\\d{9,14}$",
+      "required": false
+    }
+  },
+  "specialCharacterTests": {
+    "names": [
+      { "value": "Mary-Jane", "valid": true },
+      { "value": "O'Connor", "valid": true },
+      { "value": "Jean Pierre", "valid": true },
+      { "value": "John123", "valid": false },
+      { "value": "User@Name", "valid": false }
+    ],
+    "emails": [
+      { "value": "user+tag@example.com", "valid": true },
+      { "value": "user.name@example.com", "valid": true },
+      { "value": "user-name@example.co.uk", "valid": true },
+      { "value": "user_name@subdomain.example.org", "valid": true }
+    ]
+  }
+}

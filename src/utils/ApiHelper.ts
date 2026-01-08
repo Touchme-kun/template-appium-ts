@@ -74,7 +74,7 @@ export class ApiHelper {
   private static buildHeaders(customHeaders?: Record<string, string>): Record<string, string> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      Accept: 'application/json',
       ...customHeaders,
     };
 
@@ -124,9 +124,9 @@ export class ApiHelper {
         let data: T;
         const contentType = response.headers.get('content-type');
         if (contentType?.includes('application/json')) {
-          data = await response.json() as T;
+          data = (await response.json()) as T;
         } else {
-          data = await response.text() as unknown as T;
+          data = (await response.text()) as unknown as T;
         }
 
         const result: ApiResponse<T> = {
@@ -138,13 +138,12 @@ export class ApiHelper {
 
         Logger.debug(`API Response: ${response.status} ${response.statusText}`);
         return result;
-
       } catch (error) {
         lastError = error as Error;
         Logger.warn(`API request failed (attempt ${attempt + 1}/${retries + 1}): ${lastError.message}`);
 
         if (attempt < retries) {
-          await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+          await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
         }
       }
     }
@@ -276,7 +275,9 @@ export class ApiHelper {
     if (testDataIds.products) {
       for (const productId of testDataIds.products) {
         promises.push(
-          this.delete(`/products/${productId}`).then(() => {}).catch(() => {})
+          this.delete(`/products/${productId}`)
+            .then(() => {})
+            .catch(() => {})
         );
       }
     }
@@ -309,7 +310,7 @@ export class ApiHelper {
         Logger.info('API is ready');
         return;
       }
-      await new Promise(resolve => setTimeout(resolve, interval));
+      await new Promise((resolve) => setTimeout(resolve, interval));
     }
 
     throw new Error('API did not become ready within timeout');

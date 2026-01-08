@@ -196,10 +196,7 @@ export class WaitHelper {
   /**
    * Wait for custom condition
    */
-  static async waitForCondition(
-    condition: () => Promise<boolean>,
-    options: WaitOptions = {}
-  ): Promise<void> {
+  static async waitForCondition(condition: () => Promise<boolean>, options: WaitOptions = {}): Promise<void> {
     const timeout = options.timeout || WaitHelper.DEFAULT_TIMEOUT;
     const interval = options.interval || WaitHelper.DEFAULT_INTERVAL;
     const timeoutMsg = options.timeoutMsg || `Condition not met within ${timeout}ms`;
@@ -280,11 +277,7 @@ export class WaitHelper {
   /**
    * Retry action with wait
    */
-  static async retryWithWait<T>(
-    action: () => Promise<T>,
-    maxRetries = 3,
-    delayMs = 1000
-  ): Promise<T> {
+  static async retryWithWait<T>(action: () => Promise<T>, maxRetries = 3, delayMs = 1000): Promise<T> {
     let lastError: Error | undefined;
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {

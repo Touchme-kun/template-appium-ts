@@ -55,7 +55,7 @@ export class ElementWrapper {
     }
 
     this.cachedElement = await $(this.selector);
-    return this.cachedElement!;
+    return this.cachedElement;
   }
 
   /**
@@ -179,11 +179,11 @@ export class ElementWrapper {
   async click(): Promise<void> {
     await this.retryAction(async () => {
       const element = await this.getElement();
-      
+
       if (this.options.scrollIntoView) {
         await this.scrollIntoViewIfNeeded();
       }
-      
+
       await element.waitForClickable({ timeout: this.options.timeout });
       await element.click();
       Logger.debug(`Clicked element: ${this.selector}`);
@@ -196,11 +196,11 @@ export class ElementWrapper {
   async doubleClick(): Promise<void> {
     await this.retryAction(async () => {
       const element = await this.getElement();
-      
+
       if (this.options.scrollIntoView) {
         await this.scrollIntoViewIfNeeded();
       }
-      
+
       await element.waitForClickable({ timeout: this.options.timeout });
       await element.doubleClick();
       Logger.debug(`Double clicked element: ${this.selector}`);
@@ -213,11 +213,11 @@ export class ElementWrapper {
   async setValue(value: string): Promise<void> {
     await this.retryAction(async () => {
       const element = await this.getElement();
-      
+
       if (this.options.scrollIntoView) {
         await this.scrollIntoViewIfNeeded();
       }
-      
+
       await element.waitForDisplayed({ timeout: this.options.timeout });
       await element.setValue(value);
       Logger.debug(`Set value "${value}" on element: ${this.selector}`);
@@ -230,11 +230,11 @@ export class ElementWrapper {
   async addValue(value: string): Promise<void> {
     await this.retryAction(async () => {
       const element = await this.getElement();
-      
+
       if (this.options.scrollIntoView) {
         await this.scrollIntoViewIfNeeded();
       }
-      
+
       await element.waitForDisplayed({ timeout: this.options.timeout });
       await element.addValue(value);
       Logger.debug(`Added value "${value}" to element: ${this.selector}`);
@@ -316,7 +316,7 @@ export class ElementWrapper {
     try {
       const element = await this.getElement();
       const isDisplayed = await element.isDisplayed();
-      
+
       if (!isDisplayed) {
         await element.scrollIntoView();
         await browser.pause(300); // Wait for scroll animation
@@ -341,13 +341,13 @@ export class ElementWrapper {
   async longPress(duration: number = 2000): Promise<void> {
     await this.retryAction(async () => {
       const element = await this.getElement();
-      
+
       if (this.options.scrollIntoView) {
         await this.scrollIntoViewIfNeeded();
       }
-      
+
       await element.waitForDisplayed({ timeout: this.options.timeout });
-      
+
       const location = await element.getLocation();
       const size = await element.getSize();
       const centerX = location.x + size.width / 2;
@@ -358,7 +358,7 @@ export class ElementWrapper {
         { action: 'wait', ms: duration },
         { action: 'release' },
       ]);
-      
+
       Logger.debug(`Long pressed element for ${duration}ms: ${this.selector}`);
     }, 'longPress');
   }
@@ -387,7 +387,7 @@ export class ElementWrapper {
   async $$(childSelector: string): Promise<ElementWrapper[]> {
     const parent = await this.getElement();
     const children = await parent.$$(childSelector);
-    
+
     return children.map((child, index) => {
       const wrapper = new ElementWrapper(`${childSelector}[${index}]`, this.options);
       wrapper.cachedElement = child as unknown as WdioElement;
@@ -398,12 +398,9 @@ export class ElementWrapper {
   /**
    * Retry action with exponential backoff
    */
-  private async retryAction<T>(
-    action: () => Promise<T>,
-    actionName: string
-  ): Promise<T> {
+  private async retryAction<T>(action: () => Promise<T>, actionName: string): Promise<T> {
     let lastError: Error | null = null;
-    
+
     for (let attempt = 1; attempt <= this.options.retries; attempt++) {
       try {
         return await action();
@@ -412,7 +409,7 @@ export class ElementWrapper {
         Logger.warn(
           `Action "${actionName}" failed on attempt ${attempt}/${this.options.retries}: ${lastError.message}`
         );
-        
+
         if (attempt < this.options.retries) {
           this.clearCache(); // Clear cache to get fresh element
           const delay = this.options.retryDelay * attempt;
@@ -420,7 +417,7 @@ export class ElementWrapper {
         }
       }
     }
-    
+
     Logger.error(`Action "${actionName}" failed after ${this.options.retries} attempts on element: ${this.selector}`);
     throw lastError;
   }

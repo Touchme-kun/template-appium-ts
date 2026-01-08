@@ -87,11 +87,7 @@ export class ScreenshotUtil {
   /**
    * Capture element screenshot
    */
-  static async captureElement(
-    element: WdioElement,
-    name: string,
-    options: ScreenshotOptions = {}
-  ): Promise<string> {
+  static async captureElement(element: WdioElement, name: string, options: ScreenshotOptions = {}): Promise<string> {
     const {
       directory = this.defaultDirectory,
       filename = `${name}_${Date.now()}.png`,
@@ -133,10 +129,7 @@ export class ScreenshotUtil {
    * Compare current screenshot with baseline
    * Note: For production use, integrate with image comparison libraries like pixelmatch or resemblejs
    */
-  static async compareWithBaseline(
-    name: string,
-    threshold: number = 0.1
-  ): Promise<ComparisonResult> {
+  static async compareWithBaseline(name: string, threshold: number = 0.1): Promise<ComparisonResult> {
     const baselinePath = path.join(this.baselineDirectory, `${name}.png`);
     const actualPath = await this.capture(name, {
       filename: `${name}_actual.png`,
@@ -202,9 +195,10 @@ export class ScreenshotUtil {
       return [];
     }
 
-    return fs.readdirSync(directory)
-      .filter(file => file.endsWith('.png'))
-      .map(file => path.join(directory, file));
+    return fs
+      .readdirSync(directory)
+      .filter((file) => file.endsWith('.png'))
+      .map((file) => path.join(directory, file));
   }
 
   /**
@@ -215,7 +209,7 @@ export class ScreenshotUtil {
       return 0;
     }
 
-    const cutoff = Date.now() - (days * 24 * 60 * 60 * 1000);
+    const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
     let deletedCount = 0;
 
     const files = fs.readdirSync(directory);

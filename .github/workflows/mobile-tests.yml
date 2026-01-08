@@ -1,0 +1,291 @@
+name: Mobile Automation Tests
+
+on:
+  push:
+    branches: [main, develop, feature/*]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    # Run tests daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to test (android/ios/both)'
+        required: true
+        default: 'android'
+        type: choice
+        options:
+          - android
+          - ios
+          - both
+      test_type:
+        description: 'Test type to run'
+        required: true
+        default: 'smoke'
+        type: choice
+        options:
+          - smoke
+          - regression
+          - full
+
+env:
+  NODE_VERSION: '18'
+  ALLURE_VERSION: '2.25.0'
+
+jobs:
+  # Lint and Build
+  lint-and-build:
+    name: Lint & Build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run ESLint
+        run: npm run lint
+        continue-on-error: true
+      
+      - name: Build TypeScript
+        run: npm run build
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-dist
+          path: dist/
+          retention-days: 1
+
+  # Android Tests on BrowserStack
+  test-android:
+    name: Android Tests - BrowserStack
+    runs-on: ubuntu-latest
+    needs: lint-and-build
+    if: |
+      github.event_name == 'schedule' ||
+      github.event.inputs.platform == 'android' ||
+      github.event.inputs.platform == 'both' ||
+      github.event.inputs.platform == null
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        device: ['Samsung Galaxy S23', 'Google Pixel 7']
+        test_suite: ['smoke', 'regression']
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-dist
+          path: dist/
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run Android Tests
+        env:
+          BROWSERSTACK_USER: ${{ secrets.BROWSERSTACK_USER }}
+          BROWSERSTACK_KEY: ${{ secrets.BROWSERSTACK_KEY }}
+          BROWSERSTACK_APP_ID: ${{ secrets.BROWSERSTACK_APP_ID }}
+          BROWSERSTACK_PLATFORM: android
+          DEVICE_NAME: ${{ matrix.device }}
+          TEST_ENV: ci
+        run: |
+          if [ "${{ matrix.test_suite }}" == "smoke" ]; then
+            npm run test:cucumber:smoke:browserstack
+          else
+            npm run test:cucumber:regression:browserstack
+          fi
+      
+      - name: Generate Allure Report
+        if: always()
+        run: npm run allure:generate
+      
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-android-${{ matrix.device }}-${{ matrix.test_suite }}
+          path: allure-results/
+          retention-days: 30
+      
+      - name: Upload Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-android-${{ matrix.device }}-${{ matrix.test_suite }}
+          path: reports/screenshots/
+          retention-days: 7
+      
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-android-${{ matrix.device }}-${{ matrix.test_suite }}
+          path: logs/
+          retention-days: 7
+
+  # iOS Tests on BrowserStack
+  test-ios:
+    name: iOS Tests - BrowserStack
+    runs-on: ubuntu-latest
+    needs: lint-and-build
+    if: |
+      github.event_name == 'schedule' ||
+      github.event.inputs.platform == 'ios' ||
+      github.event.inputs.platform == 'both'
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        device: ['iPhone 15 Pro', 'iPhone 14']
+        test_suite: ['smoke']
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-dist
+          path: dist/
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run iOS Tests
+        env:
+          BROWSERSTACK_USER: ${{ secrets.BROWSERSTACK_USER }}
+          BROWSERSTACK_KEY: ${{ secrets.BROWSERSTACK_KEY }}
+          BROWSERSTACK_APP_ID: ${{ secrets.BROWSERSTACK_IOS_APP_ID }}
+          BROWSERSTACK_PLATFORM: ios
+          DEVICE_NAME: ${{ matrix.device }}
+          TEST_ENV: ci
+        run: npm run test:cucumber:${{ matrix.test_suite }}:browserstack
+      
+      - name: Generate Allure Report
+        if: always()
+        run: npm run allure:generate
+      
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-ios-${{ matrix.device }}-${{ matrix.test_suite }}
+          path: allure-results/
+          retention-days: 30
+      
+      - name: Upload Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-ios-${{ matrix.device }}-${{ matrix.test_suite }}
+          path: reports/screenshots/
+          retention-days: 7
+
+  # Merge Allure Reports
+  allure-report:
+    name: Generate Allure Report
+    runs-on: ubuntu-latest
+    needs: [test-android, test-ios]
+    if: always()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download all Allure results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: allure-results-*
+          path: allure-results-combined
+          merge-multiple: true
+      
+      - name: Setup Java for Allure
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      
+      - name: Install Allure
+        run: |
+          wget https://github.com/allure-framework/allure2/releases/download/${{ env.ALLURE_VERSION }}/allure-${{ env.ALLURE_VERSION }}.zip
+          unzip allure-${{ env.ALLURE_VERSION }}.zip
+          sudo mv allure-${{ env.ALLURE_VERSION }} /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+      
+      - name: Generate Allure Report
+        run: |
+          allure generate allure-results-combined --clean -o allure-report
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
+          destination_dir: reports/${{ github.run_number }}
+      
+      - name: Add report link to summary
+        run: |
+          echo "### :chart_with_upwards_trend: Test Reports" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Allure Report:** https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+
+  # Notification
+  notify:
+    name: Send Notifications
+    runs-on: ubuntu-latest
+    needs: [test-android, test-ios]
+    if: always() && (github.event_name == 'schedule' || github.event_name == 'push')
+    
+    steps:
+      - name: Check test results
+        id: test-results
+        run: |
+          if [ "${{ needs.test-android.result }}" == "failure" ] || [ "${{ needs.test-ios.result }}" == "failure" ]; then
+            echo "status=failure" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Send Slack notification
+        if: steps.test-results.outputs.status == 'failure'
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ steps.test-results.outputs.status }}
+          text: |
+            :x: Mobile Automation Tests Failed
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}

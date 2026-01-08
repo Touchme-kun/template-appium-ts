@@ -2,6 +2,7 @@ import type { Options, Capabilities } from '@wdio/types';
 import { browser } from '@wdio/globals';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import * as fs from 'fs';
 
 // Load environment variables
 dotenv.config();
@@ -87,10 +88,11 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
       'allure',
       {
         outputDir: path.join(rootDir, 'allure-results'),
-        disableWebdriverStepsReporting: true,
+        disableWebdriverStepsReporting: false,
         disableWebdriverScreenshotsReporting: false,
         useCucumberStepReporter: false,
         addConsoleLogs: true,
+        disableMochaHooks: false,
       },
     ],
   ],
@@ -124,7 +126,20 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
   onPrepare: function () {
     console.log('========================================');
     console.log('Starting Mobile Automation Test Suite');
+    console.log(`Timestamp: ${new Date().toISOString()}`);
     console.log('========================================');
+
+    // Ensure screenshots directory exists
+    const screenshotsDir = path.join(rootDir, 'reports', 'screenshots');
+    if (!fs.existsSync(screenshotsDir)) {
+      fs.mkdirSync(screenshotsDir, { recursive: true });
+    }
+
+    // Copy categories.json to allure-results if it exists
+    const categoriesSource = path.join(rootDir, 'allure-results', 'categories.json');
+    if (fs.existsSync(categoriesSource)) {
+      console.log('Allure categories.json found and ready');
+    }
   },
 
   /**
@@ -138,41 +153,116 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
    * Gets executed before test execution begins
    */
   before: async function () {
-    // Add custom commands or setup here
-    console.log('Test session starting...');
+    // Dynamically import to avoid issues during compilation
+    const { Logger } = await import('../src/utils/Logger');
+    const { AllureReporter } = await import('../src/utils/AllureReporter');
+
+    // Initialize reporting
+    AllureReporter.initialize();
+    
+    // Log session start
+    Logger.info('Test session starting...');
+    Logger.info(`Run ID: ${Logger.getRunId()}`);
+
+    // Add device and environment info to Allure
+    await AllureReporter.addDeviceInfo();
+    await AllureReporter.writeEnvironmentProperties();
   },
 
   /**
    * Runs before a test
    */
   beforeTest: async function (test) {
-    console.log(`Running test: ${test.title}`);
+    const { Logger } = await import('../src/utils/Logger');
+    const { AllureReporter } = await import('../src/utils/AllureReporter');
+    const { DeviceLogsHelper } = await import('../src/utils/DeviceLogsHelper');
+
+    // Set test context for logging
+    Logger.testStart(test.title);
+    AllureReporter.markTestStart();
+
+    // Clear device logs to get fresh logs for this test
+    await DeviceLogsHelper.clearLogs();
   },
 
   /**
    * Hook that gets executed after a test
    */
-  afterTest: async function (test, _context, { passed }) {
-    // Take screenshot on failure
+  afterTest: async function (test, _context, { passed, error, duration }) {
+    const { Logger } = await import('../src/utils/Logger');
+    const { AllureReporter } = await import('../src/utils/AllureReporter');
+    const { DeviceLogsHelper } = await import('../src/utils/DeviceLogsHelper');
+
+    // Log test completion
+    Logger.testEnd(test.title, passed, duration);
+
+    // On failure, capture all debugging artifacts
     if (!passed) {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-      const screenshotName = `${test.title.replace(/\s+/g, '_')}_${timestamp}`;
-      
+      const sanitizedTitle = test.title.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+
       try {
-        const screenshotPath = path.join(rootDir, 'reports', 'screenshots', `${screenshotName}.png`);
+        // Capture screenshot
+        const screenshotPath = path.join(
+          rootDir,
+          'reports',
+          'screenshots',
+          `${sanitizedTitle}_${timestamp}.png`
+        );
         await browser.saveScreenshot(screenshotPath);
-        console.log(`Screenshot saved: ${screenshotName}.png`);
-      } catch (e) {
-        console.log('Failed to capture screenshot:', e);
+        Logger.screenshot(test.title, screenshotPath);
+
+        // Also add screenshot to Allure
+        await AllureReporter.captureScreenshot(`${test.title}_failure`);
+
+        // Capture device logs
+        await DeviceLogsHelper.captureAndAttach('Device Logs on Failure');
+
+        // Capture page source
+        await AllureReporter.addPageSource('Page Source on Failure');
+
+        // Add failure categorization
+        if (error) {
+          const category = AllureReporter.categorizeFailure(error);
+          AllureReporter.addFailureAnalysis(error, category);
+          Logger.error(`Test failed: ${test.title}`, error);
+        }
+      } catch (captureError) {
+        Logger.error('Failed to capture failure artifacts', captureError as Error);
       }
     }
+
+    // Add execution time
+    AllureReporter.addExecutionTime();
+  },
+
+  /**
+   * Hook that gets executed after a test suite
+   */
+  afterSuite: async function (suite) {
+    const { Logger } = await import('../src/utils/Logger');
+    
+    // Log suite completion - stats are tracked by the spec reporter
+    Logger.suiteEnd(suite.title || 'Unknown Suite', 0, 0, 0);
   },
 
   /**
    * Gets executed after all tests are done
    */
   after: async function () {
-    console.log('Test session completed.');
+    const { Logger } = await import('../src/utils/Logger');
+    const { AllureReporter } = await import('../src/utils/AllureReporter');
+
+    // Log performance summary
+    Logger.logPerformanceSummary();
+
+    // Attach full test run logs to Allure
+    const runLogs = Logger.getCurrentRunLogs();
+    if (runLogs) {
+      AllureReporter.addAttachment('Full Test Run Logs', runLogs, 'text/plain');
+    }
+
+    Logger.info('Test session completed.');
   },
 
   /**
@@ -182,7 +272,10 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
     console.log('========================================');
     console.log('Test Suite Execution Complete');
     console.log(`Exit Code: ${exitCode}`);
+    console.log(`Timestamp: ${new Date().toISOString()}`);
     console.log('========================================');
+    console.log('Run "npm run allure:generate" to generate Allure report');
+    console.log('Run "npm run allure:open" to view the report');
   },
 
   /**

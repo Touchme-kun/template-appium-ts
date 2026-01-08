@@ -18,7 +18,7 @@ export interface ScreenConstructor<T> {
 export function getPlatform(): Platform {
   try {
     const caps = browser.capabilities as Record<string, unknown>;
-    const platformName = (caps.platformName as string || '').toLowerCase();
+    const platformName = ((caps.platformName as string) || '').toLowerCase();
     return platformName === 'ios' ? 'ios' : 'android';
   } catch {
     return 'android';
@@ -49,11 +49,7 @@ export class ScreenFactory {
    * Get or create a screen instance
    * Uses singleton pattern per screen type
    */
-  static getScreen<T>(
-    androidScreen: ScreenConstructor<T>,
-    iosScreen: ScreenConstructor<T>,
-    key?: string
-  ): T {
+  static getScreen<T>(androidScreen: ScreenConstructor<T>, iosScreen: ScreenConstructor<T>, key?: string): T {
     const platform = getPlatform();
     const cacheKey = key || androidScreen.name;
     const fullKey = `${cacheKey}_${platform}`;
@@ -73,10 +69,7 @@ export class ScreenFactory {
   /**
    * Create a new screen instance (non-singleton)
    */
-  static createScreen<T>(
-    androidScreen: ScreenConstructor<T>,
-    iosScreen: ScreenConstructor<T>
-  ): T {
+  static createScreen<T>(androidScreen: ScreenConstructor<T>, iosScreen: ScreenConstructor<T>): T {
     const platform = getPlatform();
     const ScreenClass = platform === 'ios' ? iosScreen : androidScreen;
     return new ScreenClass();
@@ -190,9 +183,7 @@ export const LocatorStrategy = {
    * Get text-based selector
    */
   text(text: string): string {
-    return isAndroid()
-      ? `android=new UiSelector().text("${text}")`
-      : `-ios predicate string:label == "${text}"`;
+    return isAndroid() ? `android=new UiSelector().text("${text}")` : `-ios predicate string:label == "${text}"`;
   },
 
   /**
