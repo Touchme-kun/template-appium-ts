@@ -12,13 +12,10 @@ import { browser } from '@wdio/globals';
 // Load environment variables
 dotenv.config();
 
-// Parse platform from environment variable
-const platform = process.env.BROWSERSTACK_PLATFORM || 'android';
-
 // Build name with timestamp
 const buildName = `BDD-${process.env.BUILD_NUMBER || new Date().toISOString().split('T')[0]}`;
 
-console.log(`🥒 BrowserStack BDD Platform: ${platform}`);
+console.log(`🥒 BrowserStack BDD Configuration Loading...`);
 console.log(`🏷️  Tags: ${process.env.CUCUMBER_TAGS || '(all scenarios)'}`);
 
 /**
@@ -32,6 +29,7 @@ const getTagExpression = (): string => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const androidCapabilities: any[] = [
   {
+    platformName: `Android`,
     'bstack:options': {
       deviceName: process.env.DEVICE_NAME || 'Samsung Galaxy S23',
       osVersion: '13.0',
@@ -46,7 +44,6 @@ const androidCapabilities: any[] = [
       local: process.env.BROWSERSTACK_LOCAL === 'true',
       idleTimeout: 300,
     },
-    platformName: 'Android',
     'appium:app': process.env.BROWSERSTACK_APP_ID || 'bs://your-app-id',
     'appium:autoGrantPermissions': true,
     'appium:noReset': false,
@@ -72,7 +69,6 @@ const iosCapabilities: any[] = [
       local: process.env.BROWSERSTACK_LOCAL === 'true',
       idleTimeout: 300,
     },
-    platformName: 'iOS',
     'appium:app': process.env.BROWSERSTACK_IOS_APP_ID || 'bs://your-ios-app-id',
     'appium:autoAcceptAlerts': true,
     'appium:noReset': false,
@@ -83,7 +79,11 @@ const iosCapabilities: any[] = [
 // Select capabilities based on platform
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getCapabilities = (): any[] => {
-  switch (platform) {
+  // Read platform at runtime, not at config load time
+  const platform = process.env.BROWSERSTACK_PLATFORM || 'android';
+  console.log(`🚀 Using platform: ${platform}`);
+  
+  switch (platform.toLowerCase()) {
     case 'ios':
       return iosCapabilities;
     case 'android':
@@ -211,6 +211,7 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
   // BrowserStack Hooks
   // ===================
   onPrepare: function () {
+    const platform = process.env.BROWSERSTACK_PLATFORM || 'android';
     console.log('\n🥒 Starting BrowserStack BDD Tests');
     console.log('=====================================');
     console.log(`Platform: ${platform}`);

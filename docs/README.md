@@ -403,18 +403,62 @@ Configure these secrets in your GitHub repository:
 
 ## 🤝 Contributing
 
-Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+Please read [CONTRIBUTING.md](../CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 ## 🐛 Troubleshooting
 
-See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for common issues and solutions.
+See [TROUBLESHOOTING.md](../TROUBLESHOOTING.md) for common issues and solutions.
+
+## �️ Utility Classes
+
+The framework includes powerful utility classes for common test automation tasks:
+
+### Test Data Management
+```typescript
+import { TestDataFactory, StringUtil, FileUtil } from '../src/utils';
+
+// Generate test data
+const user = TestDataFactory.createUser();
+const randomString = StringUtil.randomString(10);
+const uuid = StringUtil.generateUUID();
+
+// Load environment-specific data
+const envData = TestDataFactory.loadEnvironmentData('qa');
+
+// File operations
+const jsonData = await FileUtil.readJson<Config>('config.json');
+const yamlData = await FileUtil.readYaml<Config>('config.yaml');
+```
+
+### String Utilities
+- `randomString()` - Generate random strings
+- `generateUUID()` - Generate UUIDs
+- `toCamelCase()`, `toSnakeCase()`, `toKebabCase()` - Case conversions
+- `mask()`, `maskEmail()` - Mask sensitive data
+- `isValidEmail()`, `isValidPhone()` - Validation helpers
+- `generatePassword()` - Secure password generation
+
+### File Utilities
+- `readFile()`, `writeFile()` - Basic file operations
+- `readJson()`, `writeJson()` - JSON file handling
+- `readYaml()`, `writeYaml()` - YAML file handling
+- `findFiles()` - Glob-based file search
+- `copyFile()`, `moveFile()` - File management
+
+### Performance & Logging
+- `PerformanceUtil` - Measure test execution time
+- `Logger` - Structured logging with Winston
+- `ScreenshotUtil` - Capture and manage screenshots
+- `DeviceLogsHelper` - Capture device logs
 
 ## 📖 Documentation
 
-- [Architecture Guide](./ARCHITECTURE.md)
-- [Contributing Guide](./CONTRIBUTING.md)
-- [Troubleshooting Guide](./TROUBLESHOOTING.md)
+- [Architecture Guide](../ARCHITECTURE.md) - Framework design and patterns
+- [Contributing Guide](../CONTRIBUTING.md) - How to contribute
+- [Troubleshooting Guide](../TROUBLESHOOTING.md) - Common issues and solutions
+- [Onboarding Checklist](./ONBOARDING.md) - New developer setup guide
+- [Best Practices](./BEST_PRACTICES.md) - Test writing guidelines
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.

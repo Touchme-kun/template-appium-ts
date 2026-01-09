@@ -1,0 +1,70 @@
+{
+  "environment": "qa",
+  "defaultUser": {
+    "id": "qa-user-001",
+    "email": "qa.testuser@mlhuillier.com",
+    "password": "QaTestPass123!",
+    "firstName": "QA",
+    "lastName": "User",
+    "phone": "+639123456789",
+    "mpin": "123456"
+  },
+  "adminUser": {
+    "id": "qa-admin-001",
+    "email": "qa.admin@mlhuillier.com",
+    "password": "QaAdminPass123!",
+    "firstName": "QA",
+    "lastName": "Admin",
+    "role": "admin"
+  },
+  "testAccounts": {
+    "sender": {
+      "id": "qa-sender-001",
+      "email": "qa.sender@mlhuillier.com",
+      "password": "SenderPass123!",
+      "firstName": "Sender",
+      "lastName": "Account",
+      "balance": 50000.00
+    },
+    "receiver": {
+      "id": "qa-receiver-001",
+      "email": "qa.receiver@mlhuillier.com",
+      "password": "ReceiverPass123!",
+      "firstName": "Receiver",
+      "lastName": "Account",
+      "balance": 1000.00
+    }
+  },
+  "apiConfig": {
+    "baseUrl": "https://api-qa.mlhuillier.com",
+    "timeout": 30000
+  },
+  "testData": {
+    "validAmounts": [100, 500, 1000, 5000, 10000],
+    "invalidAmounts": [-100, 0, 999999999],
+    "validMobileNumbers": [
+      "+639171234567",
+      "+639181234567",
+      "+639191234567"
+    ],
+    "invalidMobileNumbers": [
+      "12345",
+      "abcdefghij",
+      "+1234567890123456"
+    ]
+  },
+  "branches": [
+    {
+      "id": "qa-branch-001",
+      "name": "QA Test Branch - Manila",
+      "code": "QA-MNL-001",
+      "address": "123 Test Street, Manila"
+    },
+    {
+      "id": "qa-branch-002",
+      "name": "QA Test Branch - Cebu",
+      "code": "QA-CEB-001",
+      "address": "456 Test Avenue, Cebu"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+# Test Configuration
+environment: qa
+
+# User Settings
+users:
+  default:
+    email: "yaml.testuser@example.com"
+    password: "YamlTestPass123!"
+    firstName: "Yaml"
+    lastName: "User"
+  
+  admin:
+    email: "yaml.admin@example.com"
+    password: "YamlAdminPass123!"
+    role: "admin"
+
+# Application Settings
+app:
+  timeout: 30000
+  retries: 3
+  screenshots: true
+  videos: true
+
+# Test Tags
+tags:
+  smoke:
+    - "@smoke"
+    - "@critical"
+  regression:
+    - "@regression"
+    - "@full"
+  excluded:
+    - "@skip"
+    - "@wip"
+
+# Device Configuration
+devices:
+  android:
+    - name: "Samsung Galaxy S23"
+      version: "13.0"
+    - name: "Google Pixel 7"
+      version: "13.0"
+  ios:
+    - name: "iPhone 15 Pro"
+      version: "17"
+    - name: "iPhone 14"
+      version: "16"
+
+# Feature Flags
+features:
+  biometricLogin: true
+  darkMode: true
+  notifications: true
+  analytics: false

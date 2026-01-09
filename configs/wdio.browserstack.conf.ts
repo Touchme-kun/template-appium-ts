@@ -8,13 +8,6 @@ import * as path from 'path';
  * Extends base configuration for cloud testing on BrowserStack
  */
 
-// Parse platform from environment variable or command line args
-const platformArg = process.argv.find((arg) => arg.startsWith('--platform='));
-const platform = process.env.BROWSERSTACK_PLATFORM || 
-                 (platformArg ? platformArg.split('=')[1] : 'android');
-
-console.log(`🚀 BrowserStack Platform: ${platform}`);
-
 // Build name with timestamp
 const buildName = `Build-${process.env.BUILD_NUMBER || new Date().toISOString().split('T')[0]}`;
 
@@ -36,7 +29,6 @@ const androidCapabilities: any[] = [
       local: process.env.BROWSERSTACK_LOCAL === 'true',
       idleTimeout: 300,
     },
-    platformName: 'Android',
     'appium:app': process.env.BROWSERSTACK_APP_ID || 'bs://your-app-id',
     'appium:autoGrantPermissions': true,
     'appium:noReset': false,
@@ -56,7 +48,6 @@ const androidCapabilities: any[] = [
       appiumVersion: '2.0.0',
       local: process.env.BROWSERSTACK_LOCAL === 'true',
     },
-    platformName: 'Android',
     'appium:app': process.env.BROWSERSTACK_APP_ID || 'bs://your-app-id',
     'appium:autoGrantPermissions': true,
     'appium:noReset': false,
@@ -82,7 +73,6 @@ const iosCapabilities: any[] = [
       local: process.env.BROWSERSTACK_LOCAL === 'true',
       idleTimeout: 300,
     },
-    platformName: 'iOS',
     'appium:app': process.env.BROWSERSTACK_IOS_APP_ID || 'bs://your-ios-app-id',
     'appium:autoAcceptAlerts': true,
     'appium:noReset': false,
@@ -113,7 +103,14 @@ const iosCapabilities: any[] = [
 // Select capabilities based on platform
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getCapabilities = (): any[] => {
-  switch (platform) {
+  // Read platform at runtime, not at config load time
+  const platformArg = process.argv.find((arg) => arg.startsWith('--platform='));
+  const platform = process.env.BROWSERSTACK_PLATFORM || 
+                   (platformArg ? platformArg.split('=')[1] : 'android');
+  
+  console.log(`🚀 Using platform: ${platform}`);
+  
+  switch (platform.toLowerCase()) {
     case 'ios':
       return iosCapabilities;
     case 'android':
@@ -188,6 +185,7 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
   // BrowserStack Hooks
   // ===================
   before: async function (_capabilities, specs) {
+    const platform = process.env.BROWSERSTACK_PLATFORM || 'android';
     console.log('BrowserStack test session starting...');
     console.log(`Build: ${buildName}`);
     console.log(`Platform: ${platform}`);
