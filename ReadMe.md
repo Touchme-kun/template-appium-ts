@@ -134,6 +134,8 @@ mobile-automation-framework/
 - [🏗️ Architecture](ARCHITECTURE.md) - Design patterns and architecture
 - [🤝 Contributing](CONTRIBUTING.md) - Contribution guidelines
 - [🔧 Troubleshooting](TROUBLESHOOTING.md) - Common issues and solutions
+- [🚀 Onboarding](docs/ONBOARDING.md) - New developer setup checklist
+- [📋 Best Practices](docs/BEST_PRACTICES.md) - Test writing guidelines
 
 ## 🧪 Writing Tests
 

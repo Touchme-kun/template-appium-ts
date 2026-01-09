@@ -12,13 +12,10 @@ import { browser } from '@wdio/globals';
 // Load environment variables
 dotenv.config();
 
-// Parse platform from environment variable
-const platform = process.env.BROWSERSTACK_PLATFORM || 'android';
-
 // Build name with timestamp
 const buildName = `BDD-${process.env.BUILD_NUMBER || new Date().toISOString().split('T')[0]}`;
 
-console.log(`🥒 BrowserStack BDD Platform: ${platform}`);
+console.log(`🥒 BrowserStack BDD Configuration Loading...`);
 console.log(`🏷️  Tags: ${process.env.CUCUMBER_TAGS || '(all scenarios)'}`);
 
 /**
@@ -32,13 +29,13 @@ const getTagExpression = (): string => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const androidCapabilities: any[] = [
   {
-    platformName: 'Android',
+    platformName: `Android`,
     'bstack:options': {
       deviceName: process.env.DEVICE_NAME || 'Samsung Galaxy S23',
-      platformVersion: '13.0',
+      osVersion: '13.0',
       projectName: 'Mobile Automation Framework - BDD',
       buildName: buildName,
-      sessionName: 'Android BDD Tests',
+      sessionName: `Android BDD Tests - ${process.env.DEVICE_NAME || 'Samsung Galaxy S23'}`,
       debug: true,
       networkLogs: true,
       video: true,
@@ -58,13 +55,12 @@ const androidCapabilities: any[] = [
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const iosCapabilities: any[] = [
   {
-    platformName: 'iOS',
     'bstack:options': {
-      deviceName: 'iPhone 15 Pro',
-      platformVersion: '17',
+      deviceName: process.env.DEVICE_NAME || 'iPhone 15 Pro',
+      osVersion: '17',
       projectName: 'Mobile Automation Framework - BDD',
       buildName: buildName,
-      sessionName: 'iOS BDD Tests',
+      sessionName: `iOS BDD Tests - ${process.env.DEVICE_NAME || 'iPhone 15 Pro'}`,
       debug: true,
       networkLogs: true,
       video: true,
@@ -83,7 +79,11 @@ const iosCapabilities: any[] = [
 // Select capabilities based on platform
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getCapabilities = (): any[] => {
-  switch (platform) {
+  // Read platform at runtime, not at config load time
+  const platform = process.env.BROWSERSTACK_PLATFORM || 'android';
+  console.log(`🚀 Using platform: ${platform}`);
+  
+  switch (platform.toLowerCase()) {
     case 'ios':
       return iosCapabilities;
     case 'android':
@@ -107,8 +107,8 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
   // ====================
   // BrowserStack Credentials
   // ====================
-  user: process.env.BROWSERSTACK_USERNAME,
-  key: process.env.BROWSERSTACK_ACCESS_KEY,
+  user: process.env.BROWSERSTACK_USER || process.env.BROWSERSTACK_USERNAME,
+  key: process.env.BROWSERSTACK_KEY || process.env.BROWSERSTACK_ACCESS_KEY,
 
   //
   // ====================
@@ -211,6 +211,7 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
   // BrowserStack Hooks
   // ===================
   onPrepare: function () {
+    const platform = process.env.BROWSERSTACK_PLATFORM || 'android';
     console.log('\n🥒 Starting BrowserStack BDD Tests');
     console.log('=====================================');
     console.log(`Platform: ${platform}`);

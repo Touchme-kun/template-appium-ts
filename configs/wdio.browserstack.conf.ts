@@ -8,13 +8,6 @@ import * as path from 'path';
  * Extends base configuration for cloud testing on BrowserStack
  */
 
-// Parse platform from environment variable or command line args
-const platformArg = process.argv.find((arg) => arg.startsWith('--platform='));
-const platform = process.env.BROWSERSTACK_PLATFORM || 
-                 (platformArg ? platformArg.split('=')[1] : 'android');
-
-console.log(`🚀 BrowserStack Platform: ${platform}`);
-
 // Build name with timestamp
 const buildName = `Build-${process.env.BUILD_NUMBER || new Date().toISOString().split('T')[0]}`;
 
@@ -22,13 +15,12 @@ const buildName = `Build-${process.env.BUILD_NUMBER || new Date().toISOString().
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const androidCapabilities: any[] = [
   {
-    platformName: 'Android',
     'bstack:options': {
       deviceName: process.env.DEVICE_NAME || 'Samsung Galaxy S23',
-      platformVersion: '13.0',
+      osVersion: '13.0',
       projectName: 'Mobile Automation Framework',
       buildName: buildName,
-      sessionName: 'Android Smoke Tests',
+      sessionName: `Android Tests - ${process.env.DEVICE_NAME || 'Samsung Galaxy S23'}`,
       debug: true,
       networkLogs: true,
       video: true,
@@ -43,13 +35,12 @@ const androidCapabilities: any[] = [
     'appium:automationName': 'UiAutomator2',
   },
   {
-    platformName: 'Android',
     'bstack:options': {
       deviceName: 'Google Pixel 7',
-      platformVersion: '13.0',
+      osVersion: '13.0',
       projectName: 'Mobile Automation Framework',
       buildName: buildName,
-      sessionName: 'Android Pixel Tests',
+      sessionName: 'Android Tests - Google Pixel 7',
       debug: true,
       networkLogs: true,
       video: true,
@@ -68,13 +59,12 @@ const androidCapabilities: any[] = [
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const iosCapabilities: any[] = [
   {
-    platformName: 'iOS',
     'bstack:options': {
       deviceName: 'iPhone 15 Pro',
-      platformVersion: '17',
+      osVersion: '17',
       projectName: 'Mobile Automation Framework',
       buildName: buildName,
-      sessionName: 'iOS iPhone 15 Pro Tests',
+      sessionName: 'iOS Tests - iPhone 15 Pro',
       debug: true,
       networkLogs: true,
       video: true,
@@ -113,7 +103,14 @@ const iosCapabilities: any[] = [
 // Select capabilities based on platform
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getCapabilities = (): any[] => {
-  switch (platform) {
+  // Read platform at runtime, not at config load time
+  const platformArg = process.argv.find((arg) => arg.startsWith('--platform='));
+  const platform = process.env.BROWSERSTACK_PLATFORM || 
+                   (platformArg ? platformArg.split('=')[1] : 'android');
+  
+  console.log(`🚀 Using platform: ${platform}`);
+  
+  switch (platform.toLowerCase()) {
     case 'ios':
       return iosCapabilities;
     case 'android':
@@ -132,8 +129,8 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
   // ====================
   // BrowserStack Credentials
   // ====================
-  user: process.env.BROWSERSTACK_USERNAME,
-  key: process.env.BROWSERSTACK_ACCESS_KEY,
+  user: process.env.BROWSERSTACK_USER || process.env.BROWSERSTACK_USERNAME,
+  key: process.env.BROWSERSTACK_KEY || process.env.BROWSERSTACK_ACCESS_KEY,
 
   //
   // ====================
@@ -188,6 +185,7 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
   // BrowserStack Hooks
   // ===================
   before: async function (_capabilities, specs) {
+    const platform = process.env.BROWSERSTACK_PLATFORM || 'android';
     console.log('BrowserStack test session starting...');
     console.log(`Build: ${buildName}`);
     console.log(`Platform: ${platform}`);

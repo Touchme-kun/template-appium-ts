@@ -25,6 +25,8 @@
     "test:cucumber:smoke:browserstack": "cross-env BROWSERSTACK_PLATFORM=android CUCUMBER_TAGS=@smoke wdio run configs/wdio.browserstack.cucumber.conf.ts",
     "test:cucumber:regression:browserstack": "cross-env BROWSERSTACK_PLATFORM=android CUCUMBER_TAGS=@regression wdio run configs/wdio.browserstack.cucumber.conf.ts",
     "test:cucumber:p1:browserstack": "cross-env BROWSERSTACK_PLATFORM=android CUCUMBER_TAGS=@P1 wdio run configs/wdio.browserstack.cucumber.conf.ts",
+    "test:cucumber:dry:browserstack:android": "cross-env BROWSERSTACK_PLATFORM=android CUCUMBER_TAGS=@smoke wdio run configs/wdio.browserstack.cucumber.conf.ts -- --cucumberOpts.dryRun",
+    "test:cucumber:dry:browserstack:ios": "cross-env BROWSERSTACK_PLATFORM=ios CUCUMBER_TAGS=@smoke wdio run configs/wdio.browserstack.cucumber.conf.ts -- --cucumberOpts.dryRun",
     
     "test:cucumber": "wdio run configs/wdio.cucumber.conf.ts",
     "test:cucumber:smoke": "cross-env CUCUMBER_TAGS=@smoke wdio run configs/wdio.cucumber.conf.ts",

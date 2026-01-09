@@ -6,6 +6,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Logger } from './Logger';
+import { FileUtil } from './FileUtil';
 
 // Simulated Faker-like functions for test data generation
 // In production, consider using @faker-js/faker
@@ -195,13 +196,10 @@ export class TestDataFactory {
    */
   static loadYamlData<T>(fileName: string): T {
     try {
-      // Note: Requires js-yaml package
       const filePath = path.join(this.dataPath, `${fileName}.yaml`);
-      const data = fs.readFileSync(filePath, 'utf8');
-      // Simple YAML parsing for basic cases
-      // For complex YAML, use js-yaml library
+      const data = FileUtil.readYaml<T>(filePath);
       Logger.debug(`Loaded YAML data from ${fileName}.yaml`);
-      return JSON.parse(JSON.stringify(data)) as T;
+      return data;
     } catch (error) {
       Logger.error(`Failed to load YAML data: ${fileName}`, error as Error);
       throw error;

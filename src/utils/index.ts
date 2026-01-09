@@ -9,3 +9,5 @@ export * from './ScreenshotUtil';
 export * from './ApiHelper';
 export * from './PerformanceUtil';
 export * from './DeviceLogsHelper';
+export * from './StringUtil';
+export * from './FileUtil';
