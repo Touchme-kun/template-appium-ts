@@ -10,16 +10,13 @@
     "lint": "eslint src tests --ext .ts",
     "lint:fix": "eslint src tests --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" \"configs/**/*.ts\"",
-    
     "test": "wdio run configs/wdio.conf.ts",
     "test:smoke": "wdio run configs/wdio.smoke.conf.ts",
     "test:android": "wdio run configs/wdio.android.conf.ts",
     "test:ios": "wdio run configs/wdio.ios.conf.ts",
     "test:docker": "wdio run configs/wdio.docker.conf.ts",
-    
     "test:android:browserstack": "cross-env BROWSERSTACK_PLATFORM=android wdio run configs/wdio.browserstack.conf.ts",
     "test:ios:browserstack": "cross-env BROWSERSTACK_PLATFORM=ios wdio run configs/wdio.browserstack.conf.ts",
-    
     "test:cucumber:android:browserstack": "cross-env BROWSERSTACK_PLATFORM=android wdio run configs/wdio.browserstack.cucumber.conf.ts",
     "test:cucumber:ios:browserstack": "cross-env BROWSERSTACK_PLATFORM=ios wdio run configs/wdio.browserstack.cucumber.conf.ts",
     "test:cucumber:smoke:browserstack": "cross-env BROWSERSTACK_PLATFORM=android CUCUMBER_TAGS=@smoke wdio run configs/wdio.browserstack.cucumber.conf.ts",
@@ -27,7 +24,6 @@
     "test:cucumber:p1:browserstack": "cross-env BROWSERSTACK_PLATFORM=android CUCUMBER_TAGS=@P1 wdio run configs/wdio.browserstack.cucumber.conf.ts",
     "test:cucumber:dry:browserstack:android": "cross-env BROWSERSTACK_PLATFORM=android CUCUMBER_TAGS=@smoke wdio run configs/wdio.browserstack.cucumber.conf.ts -- --cucumberOpts.dryRun",
     "test:cucumber:dry:browserstack:ios": "cross-env BROWSERSTACK_PLATFORM=ios CUCUMBER_TAGS=@smoke wdio run configs/wdio.browserstack.cucumber.conf.ts -- --cucumberOpts.dryRun",
-    
     "test:cucumber": "wdio run configs/wdio.cucumber.conf.ts",
     "test:cucumber:smoke": "cross-env CUCUMBER_TAGS=@smoke wdio run configs/wdio.cucumber.conf.ts",
     "test:cucumber:regression": "cross-env CUCUMBER_TAGS=@regression wdio run configs/wdio.cucumber.conf.ts",
@@ -38,7 +34,6 @@
     "test:cucumber:negative": "cross-env CUCUMBER_TAGS=@negative wdio run configs/wdio.cucumber.conf.ts",
     "test:cucumber:wip": "cross-env CUCUMBER_TAGS=@wip wdio run configs/wdio.cucumber.conf.ts",
     "test:cucumber:dry": "cross-env CUCUMBER_TAGS=@smoke wdio run configs/wdio.cucumber.conf.ts -- --cucumberOpts.dryRun",
-    
     "allure:prepare": "ts-node scripts/allure-utils.ts prepare",
     "allure:history": "ts-node scripts/allure-utils.ts preserve-history",
     "allure:clean": "ts-node scripts/allure-utils.ts clean",
@@ -46,11 +41,9 @@
     "allure:open": "allure open allure-report",
     "allure:serve": "allure serve allure-results",
     "allure:report": "npm run allure:history && npm run allure:generate && npm run allure:open",
-    
     "report": "npm run allure:report",
     "report:generate": "npm run allure:history && npm run allure:generate",
     "report:ci": "npm run allure:prepare && npm run allure:generate",
-    
     "docker:build": "docker build -f docker/Dockerfile -t mobile-automation:latest --target development .",
     "docker:build:prod": "docker build -f docker/Dockerfile -t mobile-automation:prod --target production .",
     "docker:up": "docker-compose -f docker/docker-compose.yml up -d",
@@ -60,27 +53,21 @@
     "docker:clean": "docker-compose -f docker/docker-compose.yml down -v && docker system prune -f",
     "docker:appium": "docker-compose -f docker/docker-compose.yml up -d appium",
     "docker:allure": "docker-compose -f docker/docker-compose.yml --profile reporting up -d allure",
-    
     "docker:browserstack:qa": "docker-compose -f docker/docker-compose.yml --env-file .env.qa run --rm test-runner-browserstack npm run test:cucumber:android:browserstack",
     "docker:browserstack:preprod": "docker-compose -f docker/docker-compose.yml --env-file .env.preprod run --rm test-runner-browserstack npm run test:cucumber:android:browserstack",
     "docker:browserstack:prod": "docker-compose -f docker/docker-compose.yml --env-file .env.prod run --rm test-runner-browserstack npm run test:cucumber:android:browserstack",
-    
     "docker:browserstack:smoke:qa": "docker-compose -f docker/docker-compose.yml --env-file .env.qa run --rm test-runner-browserstack npm run test:cucumber:smoke:browserstack",
     "docker:browserstack:smoke:preprod": "docker-compose -f docker/docker-compose.yml --env-file .env.preprod run --rm test-runner-browserstack npm run test:cucumber:smoke:browserstack",
     "docker:browserstack:smoke:prod": "docker-compose -f docker/docker-compose.yml --env-file .env.prod run --rm test-runner-browserstack npm run test:cucumber:smoke:browserstack",
-    
     "docker:browserstack:regression:qa": "docker-compose -f docker/docker-compose.yml --env-file .env.qa run --rm test-runner-browserstack npm run test:cucumber:regression:browserstack",
     "docker:browserstack:regression:preprod": "docker-compose -f docker/docker-compose.yml --env-file .env.preprod run --rm test-runner-browserstack npm run test:cucumber:regression:browserstack",
     "docker:browserstack:regression:prod": "docker-compose -f docker/docker-compose.yml --env-file .env.prod run --rm test-runner-browserstack npm run test:cucumber:regression:browserstack",
-    
     "docker:local:qa": "docker-compose -f docker/docker-compose.yml --env-file .env.qa up test-runner",
     "docker:local:preprod": "docker-compose -f docker/docker-compose.yml --env-file .env.preprod up test-runner",
     "docker:local:prod": "docker-compose -f docker/docker-compose.yml --env-file .env.prod up test-runner",
-    
     "docker:local:smoke:qa": "docker-compose -f docker/docker-compose.yml --env-file .env.qa run --rm test-runner npm run test:cucumber:smoke",
     "docker:local:smoke:preprod": "docker-compose -f docker/docker-compose.yml --env-file .env.preprod run --rm test-runner npm run test:cucumber:smoke",
     "docker:local:smoke:prod": "docker-compose -f docker/docker-compose.yml --env-file .env.prod run --rm test-runner npm run test:cucumber:smoke",
-    
     "prepare": "husky install"
   },
   "keywords": [
@@ -133,6 +120,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^8.3.1",
+    "@gavrix/appium-mcp": "^0.3.0",
     "webdriverio": "^9.23.0"
   },
   "lint-staged": {

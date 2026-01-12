@@ -52,9 +52,9 @@ Desktop.ini
 
 # Mobile Apps (keep sample apps in version control if needed)
 # apps/
-# *.apk
-# *.ipa
-# *.app
+*.apk
+*.ipa
+*.app
 
 # BrowserStack
 .browserstack/
