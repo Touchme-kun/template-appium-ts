@@ -31,4 +31,11 @@ describe('Smoke Test', () => {
     expect(width).toBeGreaterThan(0);
     expect(height).toBeGreaterThan(0);
   });
+
+  it('should be able to login to the app', async () => {
+    console.log('🔐 Performing login action');
+
+    // Navigate to Login Screen
+    
+  });
 });

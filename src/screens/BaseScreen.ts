@@ -74,7 +74,7 @@ export abstract class BaseScreen {
   }
 
   /**
-   * Wait for an element to be clickable
+   * Wait for an element to be clickable (mobile-compatible)
    */
   async waitForElementClickable(selector: string, options?: WaitOptions): Promise<WdioElement> {
     const timeout = options?.timeout || 30000;
@@ -82,7 +82,11 @@ export abstract class BaseScreen {
     const timeoutMsg = options?.timeoutMsg || `Element ${selector} not clickable within ${timeout}ms`;
 
     const element = await $(selector);
-    await element.waitForClickable({ timeout, interval, timeoutMsg });
+    
+    // For mobile apps, use waitForDisplayed and waitForEnabled instead of waitForClickable
+    await element.waitForDisplayed({ timeout, interval, timeoutMsg });
+    await element.waitForEnabled({ timeout, interval, timeoutMsg: `Element ${selector} not enabled within ${timeout}ms` });
+    
     return element;
   }
 

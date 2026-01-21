@@ -20,6 +20,11 @@ export class LoginScreen extends BaseScreen {
   // ===========================================
   // Element Locators
   // ===========================================
+  private readonly mobileInputField: Locator = {
+    android: '//android.widget.EditText[@hint="9XX XXX XXXX"]',
+    ios: '~mobile-input',
+    description: 'Mobile number input field',
+  };
 
   private readonly usernameField: Locator = {
     android: '~username-input',
@@ -34,7 +39,7 @@ export class LoginScreen extends BaseScreen {
   };
 
   private readonly loginButton: Locator = {
-    android: '~login-button',
+    android: '//android.view.ViewGroup[@content-desc="Login"]',
     ios: '~login-button',
     description: 'Login button',
   };
@@ -60,6 +65,18 @@ export class LoginScreen extends BaseScreen {
   // ===========================================
   // Actions
   // ===========================================
+
+  /**
+   * Enter mobile number
+   * @param mobile 
+   */
+   async enterMobileNumber(mobile: string): Promise<void> {
+    await AllureReporter.step('Enter mobile number', async () => {
+      Logger.action('Enter Mobile Number', mobile);
+      await this.enterText(this.getLocator(this.mobileInputField), mobile);
+    });
+  }
+  
 
   /**
    * Enter username
@@ -95,16 +112,15 @@ export class LoginScreen extends BaseScreen {
   /**
    * Perform complete login flow
    */
-  async login(username: string, password: string): Promise<void> {
-    Logger.info(`Attempting login for user: ${username}`);
+  async login(mobile: string): Promise<void> {
+    Logger.info(`Attempting login for user: ${mobile}`);
     AllureReporter.addFeature('Authentication');
     AllureReporter.addStory('User Login');
 
-    await this.enterUsername(username);
-    await this.enterPassword(password);
+    await this.enterMobileNumber(mobile);
     await this.tapLoginButton();
 
-    Logger.info('Login action completed');
+    Logger.info('Login action completed, Navigating to OTP Screen');
   }
 
   /**
