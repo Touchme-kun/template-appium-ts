@@ -112,11 +112,9 @@ export class BaseTest {
     Logger.info(`Cleaning up test suite: ${suiteName}`);
 
     try {
-      // Close any open sessions
-      if (browser.sessionId) {
-        await browser.deleteSession();
-        Logger.info('Browser session closed');
-      }
+      // Session lifecycle is managed by WebdriverIO/Appium services.
+      // Avoid calling browser.deleteSession() here to prevent double
+      // teardown and related WebDriver errors after tests complete.
     } catch (error) {
       Logger.warn('Error closing browser session', error as Error);
     }

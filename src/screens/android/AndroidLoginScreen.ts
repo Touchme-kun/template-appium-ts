@@ -15,7 +15,7 @@ export class AndroidLoginScreen extends BaseScreen {
   // Locator strings
   private readonly usernameFieldSelector = 'android=new UiSelector().resourceId("com.app:id/username_input")';
   private readonly passwordFieldSelector = 'android=new UiSelector().resourceId("com.app:id/password_input")';
-  private readonly loginButtonSelector = 'android=new UiSelector().resourceId("com.app:id/login_button")';
+  private readonly loginButtonSelector = 'android=new UiSelector().resourceId("208465")';
   private readonly forgotPasswordSelector = 'android=new UiSelector().resourceId("com.app:id/forgot_password")';
   private readonly rememberMeSelector = 'android=new UiSelector().resourceId("com.app:id/remember_me")';
   private readonly signUpSelector = 'android=new UiSelector().resourceId("com.app:id/sign_up_link")';
@@ -24,6 +24,9 @@ export class AndroidLoginScreen extends BaseScreen {
   private readonly googleLoginSelector = 'android=new UiSelector().resourceId("com.app:id/google_login")';
   private readonly facebookLoginSelector = 'android=new UiSelector().resourceId("com.app:id/facebook_login")';
 
+  private readonly mobileNumberFieldSelector = 'android=new UiSelector().text("9XX XXX XXXX")';
+  private readonly continueButtonSelector = 'android=new UiSelector().resourceId("android:id/button1")';
+  private readonly alertMessageSelector = 'android=new UiSelector().resourceId("android:id/message")';
   // Actions
   async enterUsername(username: string): Promise<void> {
     Logger.step(`Enter username: ${username}`);
@@ -33,6 +36,12 @@ export class AndroidLoginScreen extends BaseScreen {
   async enterPassword(password: string): Promise<void> {
     Logger.step('Enter password: ****');
     await this.enterText(this.passwordFieldSelector, password);
+  }
+
+  async enterMobileNumber(mobile: string): Promise<void> {
+    try{await $(this.continueButtonSelector).click();}catch{Logger.warn('No alert to dismiss');};
+    Logger.step(`Enter mobile number: ${mobile}`);
+    await this.enterText(this.mobileNumberFieldSelector, mobile);
   }
 
   async tapLoginButton(): Promise<void> {

@@ -72,18 +72,26 @@ const consoleFormat = winston.format.combine(
   })
 );
 
+// Allow different verbosity for console vs file outputs
+const consoleLevel = process.env.CONSOLE_LOG_LEVEL || process.env.LOG_LEVEL || 'info';
+const fileLevel = process.env.FILE_LOG_LEVEL || process.env.LOG_LEVEL || 'info';
+
 // Create Winston logger instance
 const winstonLogger = winston.createLogger({
-  level: process.env.LOG_LEVEL || 'info',
+  // Global level should be the most verbose we care about so that
+  // per-transport levels can further restrict output.
+  level: process.env.LOG_LEVEL || 'debug',
   format: customFormat,
   defaultMeta: { service: 'mobile-automation', runId },
   transports: [
-    // Console transport
+    // Console transport (usually less verbose)
     new winston.transports.Console({
+      level: consoleLevel,
       format: consoleFormat,
     }),
     // File transport for all logs
     new winston.transports.File({
+      level: fileLevel,
       filename: path.join(logsDir, 'test-execution.log'),
       format: jsonFormat,
       maxsize: 10 * 1024 * 1024, // 10MB
@@ -92,14 +100,15 @@ const winstonLogger = winston.createLogger({
     }),
     // Separate file for errors
     new winston.transports.File({
-      filename: path.join(logsDir, 'error.log'),
       level: 'error',
+      filename: path.join(logsDir, 'error.log'),
       format: jsonFormat,
       maxsize: 10 * 1024 * 1024,
       maxFiles: 14,
     }),
-    // Per-run log file
+    // Per-run log file (same verbosity as main file by default)
     new winston.transports.File({
+      level: fileLevel,
       filename: path.join(testRunLogsDir, `run-${runId}.log`),
       format: jsonFormat,
     }),

@@ -8,97 +8,84 @@ import * as path from 'path';
  * Extends base configuration for cloud testing on BrowserStack
  */
 
-// Build name with timestamp
-const buildName = `Build-${process.env.BUILD_NUMBER || new Date().toISOString().split('T')[0]}`;
+// Build & project names (env‑driven with safe defaults)
+const projectName = process.env.BROWSERSTACK_PROJECT_NAME || 'Mobile Automation Framework';
+const buildName =
+  process.env.BROWSERSTACK_BUILD_NAME ||
+  `Build-${process.env.BUILD_NUMBER || new Date().toISOString().split('T')[0]}`;
 
-// BrowserStack capabilities for Android devices
+const androidOsVersion = process.env.BROWSERSTACK_ANDROID_OS_VERSION || '13.0';
+const iosOsVersion =
+  process.env.BROWSERSTACK_IOS_OS_VERSION ||
+  process.env.IOS_PLATFORM_VERSION ||
+  '17';
+
+// Device lists can be comma‑separated, fully controlled via env
+const androidDevices = (process.env.BROWSERSTACK_ANDROID_DEVICES || process.env.DEVICE_NAME || '')
+  .split(',')
+  .map((d) => d.trim())
+  .filter((d) => d.length > 0);
+
+const iosDevices = (process.env.BROWSERSTACK_IOS_DEVICES || process.env.IOS_DEVICE_NAME || '')
+  .split(',')
+  .map((d) => d.trim())
+  .filter((d) => d.length > 0);
+
+// App IDs come only from env (no hardcoded bs:// placeholders)
+const androidAppId = process.env.BROWSERSTACK_APP_ID;
+const iosAppId = process.env.BROWSERSTACK_IOS_APP_ID;
+
+// BrowserStack capabilities for Android devices (env‑driven)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const androidCapabilities: any[] = [
-  {
+const androidCapabilities: any[] = (androidDevices.length ? androidDevices : ['Android Device']).map(
+  (deviceName: string) => ({
+    platformName: 'Android',
     'bstack:options': {
-      deviceName: process.env.DEVICE_NAME || 'Samsung Galaxy S23',
-      osVersion: '13.0',
-      projectName: 'Mobile Automation Framework',
-      buildName: buildName,
-      sessionName: `Android Tests - ${process.env.DEVICE_NAME || 'Samsung Galaxy S23'}`,
+      deviceName,
+      osVersion: androidOsVersion,
+      projectName,
+      buildName,
+      sessionName: `Android Tests - ${deviceName}`,
       debug: true,
       networkLogs: true,
       video: true,
       deviceLogs: true,
-      appiumVersion: '2.0.0',
+      appiumVersion: process.env.BROWSERSTACK_APPIUM_VERSION || '2.0.0',
       local: process.env.BROWSERSTACK_LOCAL === 'true',
       idleTimeout: 300,
     },
-    'appium:app': process.env.BROWSERSTACK_APP_ID || 'bs://your-app-id',
+    'appium:app': androidAppId,
     'appium:autoGrantPermissions': true,
-    'appium:noReset': false,
-    'appium:automationName': 'UiAutomator2',
-  },
-  {
-    'bstack:options': {
-      deviceName: 'Google Pixel 7',
-      osVersion: '13.0',
-      projectName: 'Mobile Automation Framework',
-      buildName: buildName,
-      sessionName: 'Android Tests - Google Pixel 7',
-      debug: true,
-      networkLogs: true,
-      video: true,
-      deviceLogs: true,
-      appiumVersion: '2.0.0',
-      local: process.env.BROWSERSTACK_LOCAL === 'true',
-    },
-    'appium:app': process.env.BROWSERSTACK_APP_ID || 'bs://your-app-id',
-    'appium:autoGrantPermissions': true,
-    'appium:noReset': false,
-    'appium:automationName': 'UiAutomator2',
-  },
-];
+    'appium:noReset': process.env.BROWSERSTACK_ANDROID_NO_RESET === 'true',
+    'appium:automationName': process.env.BROWSERSTACK_ANDROID_AUTOMATION_NAME || 'UiAutomator2',
+  })
+);
 
-// BrowserStack capabilities for iOS devices
+// BrowserStack capabilities for iOS devices (env‑driven)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const iosCapabilities: any[] = [
-  {
-    'bstack:options': {
-      deviceName: 'iPhone 15 Pro',
-      osVersion: '17',
-      projectName: 'Mobile Automation Framework',
-      buildName: buildName,
-      sessionName: 'iOS Tests - iPhone 15 Pro',
-      debug: true,
-      networkLogs: true,
-      video: true,
-      deviceLogs: true,
-      appiumVersion: '2.0.0',
-      local: process.env.BROWSERSTACK_LOCAL === 'true',
-      idleTimeout: 300,
-    },
-    'appium:app': process.env.BROWSERSTACK_IOS_APP_ID || 'bs://your-ios-app-id',
-    'appium:autoAcceptAlerts': true,
-    'appium:noReset': false,
-    'appium:automationName': 'XCUITest',
-  },
-  {
+const iosCapabilities: any[] = (iosDevices.length ? iosDevices : ['iPhone']).map(
+  (deviceName: string) => ({
     platformName: 'iOS',
     'bstack:options': {
-      deviceName: 'iPhone 14',
-      platformVersion: '16',
-      projectName: 'Mobile Automation Framework',
-      buildName: buildName,
-      sessionName: 'iOS iPhone 14 Tests',
+      deviceName,
+      osVersion: iosOsVersion,
+      projectName,
+      buildName,
+      sessionName: `iOS Tests - ${deviceName}`,
       debug: true,
       networkLogs: true,
       video: true,
       deviceLogs: true,
-      appiumVersion: '2.0.0',
+      appiumVersion: process.env.BROWSERSTACK_APPIUM_VERSION || '2.0.0',
       local: process.env.BROWSERSTACK_LOCAL === 'true',
+      idleTimeout: 300,
     },
-    'appium:app': process.env.BROWSERSTACK_IOS_APP_ID || 'bs://your-ios-app-id',
+    'appium:app': iosAppId,
     'appium:autoAcceptAlerts': true,
-    'appium:noReset': false,
-    'appium:automationName': 'XCUITest',
-  },
-];
+    'appium:noReset': process.env.BROWSERSTACK_IOS_NO_RESET === 'true',
+    'appium:automationName': process.env.BROWSERSTACK_IOS_AUTOMATION_NAME || 'XCUITest',
+  })
+);
 
 // Select capabilities based on platform
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

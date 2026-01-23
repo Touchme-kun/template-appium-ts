@@ -47,6 +47,7 @@
     "report": "npm run allure:report",
     "report:generate": "npm run allure:history && npm run allure:generate",
     "report:ci": "npm run allure:prepare && npm run allure:generate",
+    "npm:interactive": "ts-node scripts/npm-interactive.ts",
     "docker:build": "docker build -f docker/Dockerfile -t mobile-automation:latest --target development .",
     "docker:build:prod": "docker build -f docker/Dockerfile -t mobile-automation:prod --target production .",
     "docker:up": "docker-compose -f docker/docker-compose.yml up -d",
