@@ -1,14 +1,11 @@
 import { driver, expect } from '@wdio/globals';
 import { BaseTest } from '../../../src/base/BaseTest';
-import { AndroidLoginScreen } from '../../../src/screens/android/AndroidLoginScreen';
-import OTPScreen from '../../../src/screens/android/OTPScreen';
-import { PinScreen } from '../../../src/screens/android/PinScreen';
-import { DashboardScreen } from '../../../src/screens/android/DashboardScreen';
+import { LoginScreen, OTPScreen, PinScreen, DashboardScreen } from '../../../src/screens/android';
 
 
 describe('MCash - Smoke Test (Android)', () => {
 
-    let loginScreen : AndroidLoginScreen;
+    let loginScreen : LoginScreen;
     let otpScreen : OTPScreen;
     let pinScreen : PinScreen;
     let dashboardScreen : DashboardScreen;
@@ -16,7 +13,7 @@ describe('MCash - Smoke Test (Android)', () => {
 
     before(async () => {
         await BaseTest.initializeSuite('MCash Smoke Test Suite');
-        loginScreen = new AndroidLoginScreen();
+        loginScreen = new LoginScreen();
         otpScreen = new OTPScreen();
         pinScreen = new PinScreen();
         dashboardScreen = new DashboardScreen();

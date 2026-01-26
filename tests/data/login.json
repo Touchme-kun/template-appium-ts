@@ -1,65 +1,9 @@
 {
-  "validUsers": [
+  "tiers": [
     {
-      "email": "admin@example.com",
-      "password": "AdminPass123!",
-      "role": "admin",
-      "firstName": "Admin",
-      "lastName": "User"
-    },
-    {
-      "email": "user@example.com",
-      "password": "UserPass123!",
-      "role": "standard",
-      "firstName": "Standard",
-      "lastName": "User"
-    },
-    {
-      "email": "premium@example.com",
-      "password": "PremiumPass123!",
-      "role": "premium",
-      "firstName": "Premium",
-      "lastName": "User"
+      "tier" : "Buyer",
+      "mobileNumber" : "9999999996",
+      "pin" : "1234"
     }
-  ],
-  "invalidUsers": [
-    {
-      "email": "invalid@test.com",
-      "password": "wrong123",
-      "expectedError": "Invalid email or password"
-    },
-    {
-      "email": "nonexistent@example.com",
-      "password": "Test123!",
-      "expectedError": "User not found"
-    },
-    {
-      "email": "locked@example.com",
-      "password": "LockedPass123!",
-      "expectedError": "Account is locked"
-    },
-    {
-      "email": "disabled@example.com",
-      "password": "DisabledPass123!",
-      "expectedError": "Account is disabled"
-    }
-  ],
-  "validationTests": {
-    "email": [
-      { "value": "", "error": "Email is required" },
-      { "value": "invalid", "error": "Please enter a valid email" },
-      { "value": "@nodomain.com", "error": "Please enter a valid email" },
-      { "value": "user@", "error": "Please enter a valid email" },
-      { "value": "user@.com", "error": "Please enter a valid email" },
-      { "value": "user space@domain.com", "error": "Please enter a valid email" }
-    ],
-    "password": [
-      { "value": "", "error": "Password is required" },
-      { "value": "123", "error": "Password must be at least 8 characters" },
-      { "value": "password", "error": "Password must contain a number" },
-      { "value": "12345678", "error": "Password must contain a letter" }
-    ]
-  },
-  "lockedAccountThreshold": 5,
-  "sessionTimeoutMinutes": 30
+  ]
 }

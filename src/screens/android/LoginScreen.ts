@@ -6,7 +6,7 @@ import { $ } from '@wdio/globals';
 import { BaseScreen } from '../BaseScreen';
 import { Logger } from '../../utils/Logger';
 
-export class AndroidLoginScreen extends BaseScreen {
+export class LoginScreen extends BaseScreen {
   // Android-specific locators using resource-id and UIAutomator
   protected get screenLocator(): string {
     return 'android=new UiSelector().resourceId("com.app:id/login_container")';
@@ -125,4 +125,4 @@ export class AndroidLoginScreen extends BaseScreen {
   }
 }
 
-export default AndroidLoginScreen;
+export default LoginScreen;
