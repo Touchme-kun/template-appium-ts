@@ -19,6 +19,9 @@ export class OTPScreen extends BaseScreen {
     private readonly otpInputFieldSelector = (index: number): string => {
         return `android=new UiSelector().resourceId("94NMBE-${index}")`;
     }
+    private readonly inAppOtpSelector = 'android=new UiSelector().text("One Time Pin")';
+    private readonly otpContinueButtonSelector = 'android=new UiSelector().resourceId("modal-confirm-button")';
+    private readonly otpCancelButtonSelector = 'android=new UiSelector().description("CANCEL")';
 
     private readonly didNotReceiveOtpSelector = 'android=new UiSelector().text("Did not receive OTP?")';
     
@@ -29,16 +32,24 @@ export class OTPScreen extends BaseScreen {
          * Enter otp
          * @param otp 
         */
-        async enterOTP(otp: string): Promise<void> {
-             if (otp.length !== 6) {
-                throw new Error('OTP must be exactly 6 digits');
+    async enterOTP(otp: string): Promise<void> {
+        if (otp.length !== 6) {
+            throw new Error('OTP must be exactly 6 digits');
+        }
+        await AllureReporter.step(`Enter OTP: ${otp}`, async () => {
+            Logger.action(`Entering OTP: ${otp}`);
+            for (let i = 0; i < 6; i++) {
+                const field = await this.otpInputFieldSelector(i);
+                await this.enterText(field, otp[i]);
             }
-            await AllureReporter.step(`Enter OTP: ${otp}`, async () => {
-                Logger.action(`Entering OTP: ${otp}`);
-                for (let i = 0; i < 6; i++) {
-                    const field = await this.otpInputFieldSelector(i);
-                    await this.enterText(field, otp[i]);
-            }
+        });
+    }
+
+    async confirmInAppOTP(): Promise<void> {
+        await AllureReporter.step('Confirm In-App OTP', async () => {
+            Logger.step('Confirming In-App OTP');
+            await this.waitForElement(this.inAppOtpSelector);
+            await this.tap(this.otpContinueButtonSelector);
         });
     }
 }
