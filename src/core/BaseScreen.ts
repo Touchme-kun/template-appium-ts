@@ -101,6 +101,30 @@ export abstract class BaseScreen {
   }
 
   /**
+   * Tap at specific coordinates on the screen
+   */
+  async tapAtCoordinates(x: number, y: number): Promise<void> {
+    Logger.debug(`Tapping at coordinates: (${x}, ${y})`);
+
+    await driver.performActions([
+      {
+        type: 'pointer',
+        id: 'finger1',
+        parameters: { pointerType: 'touch' },
+        actions: [
+          { type: 'pointerMove', duration: 0, x, y },
+          { type: 'pointerDown', button: 0 },
+          { type: 'pause', duration: 100 },
+          { type: 'pointerUp', button: 0 },
+        ],
+      },
+    ]);
+
+    await driver.releaseActions();
+    Logger.debug(`Tapped at coordinates: (${x}, ${y})`);
+  }
+
+  /**
    * Enter text into an input field
    */
   async enterText(selector: string, text: string, clearFirst = true): Promise<void> {

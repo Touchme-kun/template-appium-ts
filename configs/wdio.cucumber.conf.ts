@@ -8,8 +8,8 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { rootDir } from './wdio.conf';
 
-// Load environment variables
-dotenv.config();
+// Load environment variables — TEST_ENV selects the file (e.g. TEST_ENV=qa → .env.qa)
+dotenv.config({ path: path.resolve(process.cwd(), `.env.${process.env.TEST_ENV || 'qa'}`) });
 
 /**
  * Get tag expression from command line or environment

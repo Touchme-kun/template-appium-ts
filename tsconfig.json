@@ -2,7 +2,9 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "commonjs",
-    "lib": ["ES2022"],
+    "lib": [
+      "ES2022"
+    ],
     "outDir": "./dist",
     "rootDir": ".",
     "strict": true,
@@ -14,6 +16,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "moduleResolution": "node",
+    "ignoreDeprecations": "6.0",
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
@@ -33,13 +36,27 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@config/*": ["src/config/*"],
-      "@pages/*": ["src/pages/*"],
-      "@screens/*": ["src/screens/*"],
-      "@utils/*": ["src/utils/*"],
-      "@helpers/*": ["src/helpers/*"],
-      "@types/*": ["src/types/*"],
-      "@data/*": ["tests/data/*"]
+      "@core/*": [
+        "src/core/*"
+      ],
+      "@config/*": [
+        "src/config/*"
+      ],
+      "@screens/*": [
+        "src/screens/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@helpers/*": [
+        "src/helpers/*"
+      ],
+      "@types/*": [
+        "src/types/*"
+      ],
+      "@data/*": [
+        "tests/data/*"
+      ]
     }
   },
   "include": [

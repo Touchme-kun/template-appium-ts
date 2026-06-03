@@ -8,7 +8,7 @@ export type Platform = 'android' | 'ios';
 /**
  * Environment configuration
  */
-export type Environment = 'dev' | 'staging' | 'prod';
+export type Environment = 'dev' | 'staging' | 'qa' | 'preprod' | 'prod';
 
 /**
  * Test execution context

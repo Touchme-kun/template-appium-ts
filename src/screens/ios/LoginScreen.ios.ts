@@ -1,12 +1,12 @@
 /**
- * IOSLoginScreen - iOS-specific login screen implementation
+ * LoginScreen - iOS-specific login screen implementation
  */
 
-import { $, browser } from '@wdio/globals';
-import { BaseScreen } from '../BaseScreen';
+import { $ } from '@wdio/globals';
+import { BaseScreen } from '../../core/BaseScreen';
 import { Logger } from '../../utils/Logger';
 
-export class IOSLoginScreen extends BaseScreen {
+export class LoginScreen extends BaseScreen {
   // iOS-specific locators using accessibility IDs and predicates
   protected get screenLocator(): string {
     return '~loginScreen';
@@ -126,12 +126,8 @@ export class IOSLoginScreen extends BaseScreen {
    * Dismiss keyboard if visible
    */
   async dismissKeyboard(): Promise<void> {
-    try {
-      await browser.execute('mobile: hideKeyboard', {});
-    } catch {
-      // Keyboard might not be visible
-    }
+    await this.hideKeyboard();
   }
 }
 
-export default IOSLoginScreen;
+export default LoginScreen;

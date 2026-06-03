@@ -4,8 +4,8 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import * as fs from 'fs';
 
-// Load environment variables
-dotenv.config();
+// Load environment variables — TEST_ENV selects the file (e.g. TEST_ENV=qa → .env.qa)
+dotenv.config({ path: path.resolve(process.cwd(), `.env.${process.env.TEST_ENV || 'qa'}`) });
 
 // Root directory (one level up from configs/)
 export const rootDir = path.resolve(__dirname, '..');

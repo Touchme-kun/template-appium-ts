@@ -1,5 +1,4 @@
-import { $ } from '@wdio/globals';
-import { BaseScreen } from '../BaseScreen';
+import { BaseScreen } from '../../core/BaseScreen';
 import { Logger } from '../../utils/Logger';
 import { AllureReporter } from '../../utils/AllureReporter';
 
@@ -44,23 +43,23 @@ export class SendScreen extends BaseScreen {
 
     // -- Confirm Details Locators
     private readonly confirmDetailsHeaderSelector = 'android=new UiSelector().text("Confirm Details")';
-    private readonly recipientNameSelector = 'android=new UiSelector().resourceId("LFYYQ2")';
-    private readonly recipientMobileSelector = 'android=new UiSelector().resourceId("42PFEL")';
-    private readonly paymentMethodSelector = 'android=new UiSelector().resourceId("I3JJS1")';
-    private readonly amountToSendSelector = 'android=new UiSelector().resourceId("64FSXA")';
-    private readonly serviceFeeSelector = 'android=new UiSelector().resourceId("V52N3I")';
-    private readonly totalAmountSelector = 'android=new UiSelector().resourceId("ONY991")';
+    protected readonly recipientNameSelector = 'android=new UiSelector().resourceId("LFYYQ2")';
+    protected readonly recipientMobileSelector = 'android=new UiSelector().resourceId("42PFEL")';
+    protected readonly paymentMethodSelector = 'android=new UiSelector().resourceId("I3JJS1")';
+    protected readonly amountToSendSelector = 'android=new UiSelector().resourceId("64FSXA")';
+    protected readonly serviceFeeSelector = 'android=new UiSelector().resourceId("V52N3I")';
+    protected readonly totalAmountSelector = 'android=new UiSelector().resourceId("ONY991")';
 
     // -- Saved Recipients Locators
-    private readonly savedRecipientsHeaderSelector = 'android=new UiSelector().text("Saved Recipients")';
+    protected readonly savedRecipientsHeaderSelector = 'android=new UiSelector().text("Saved Recipients")';
     private readonly recipientSelector = (index: number): string => {
         return `new UiSelector().resourceId("HQCZ6L").instance(${index})`;
     }
     private readonly nickNameInputSelector = 'android=new UiSelector().text("Nickname")';
-    private readonly saveRecipientButtonSelector = 'android=new UiSelector().resourceId("HY30UQ")';
+    protected readonly saveRecipientButtonSelector = 'android=new UiSelector().resourceId("HY30UQ")';
     private readonly selectRecipientButtonSelector = 'android=new UiSelector().resourceId("EQIZOH")';
-    private readonly editRecipientButtonSelector = 'android=new UiSelector().resourceId("A9WMZF")';
-    private readonly deleteRecipientButtonSelector = 'android=new UiSelector().resourceId("LEZ4NJ")';
+    protected readonly editRecipientButtonSelector = 'android=new UiSelector().resourceId("A9WMZF")';
+    protected readonly deleteRecipientButtonSelector = 'android=new UiSelector().resourceId("LEZ4NJ")';
 
     // -- Common Locators
     private readonly nextButtonSelector = '~Next';
@@ -68,17 +67,17 @@ export class SendScreen extends BaseScreen {
 
     // -- Receipt Locators
     private readonly transactionReceiptHeaderSelector = 'android=new UiSelector().text("Send Money Successful")';
-    private readonly amountSentSelector = 'android=new UiSelector().resourceId("L84AFP")';
-    private readonly refNumberSelector = 'android=new UiSelector().resourceId("56FWEC")';
-    private readonly receiverNameSelector = 'android=new UiSelector().resourceId("ZBZIFA")';
-    private readonly receiverMobileSelector = 'android=new UiSelector().resourceId("L02HLH")';
-    private readonly paymentMethodReceiptSelector = 'android=new UiSelector().resourceId("E9A6LE")';
-    private readonly amountToSendReceiptSelector = 'android=new UiSelector().resourceId("VB5N2U")';
-    private readonly serviceFeeReceiptSelector = 'android=new UiSelector().resourceId("KRKBMB")'
-    private readonly totalAmountReceiptSelector = 'android=new UiSelector().resourceId("46ELT5")';
-    private readonly pleaseReviewSelector = 'android=new UiSelector().resourceId("BHKLOB")';
-    private readonly backToHomeButtonSelector = 'android=new UiSelector().resourceId("T77C1L")';
-    private readonly newTransactionButtonSelector = 'android=new UiSelector().resourceId("EXIVDC")';
+    protected readonly amountSentSelector = 'android=new UiSelector().resourceId("L84AFP")';
+    protected readonly refNumberSelector = 'android=new UiSelector().resourceId("56FWEC")';
+    protected readonly receiverNameSelector = 'android=new UiSelector().resourceId("ZBZIFA")';
+    protected readonly receiverMobileSelector = 'android=new UiSelector().resourceId("L02HLH")';
+    protected readonly paymentMethodReceiptSelector = 'android=new UiSelector().resourceId("E9A6LE")';
+    protected readonly amountToSendReceiptSelector = 'android=new UiSelector().resourceId("VB5N2U")';
+    protected readonly serviceFeeReceiptSelector = 'android=new UiSelector().resourceId("KRKBMB")'
+    protected readonly totalAmountReceiptSelector = 'android=new UiSelector().resourceId("46ELT5")';
+    protected readonly pleaseReviewSelector = 'android=new UiSelector().resourceId("BHKLOB")';
+    protected readonly backToHomeButtonSelector = 'android=new UiSelector().resourceId("T77C1L")';
+    protected readonly newTransactionButtonSelector = 'android=new UiSelector().resourceId("EXIVDC")';
 
     // ===========================================
     // Actions

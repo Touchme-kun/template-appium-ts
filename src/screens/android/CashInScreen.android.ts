@@ -1,5 +1,5 @@
 import { $, expect } from '@wdio/globals';
-import { BaseScreen } from '../BaseScreen';
+import { BaseScreen } from '../../core/BaseScreen';
 import { Logger } from '../../utils/Logger';
 import { AllureReporter } from '../../utils/AllureReporter';
 /**
@@ -21,15 +21,15 @@ export class CashInScreen extends BaseScreen {
     private readonly mlBranchSelector = 'android=new UiSelector().text("ML Branch")';
 
     // * Branch Cash In
-    private readonly branchCashInSelector = 'android=new UiSelector().resourceId("8EW8RL")';
+    protected readonly branchCashInSelector = 'android=new UiSelector().resourceId("8EW8RL")';
     private readonly branchCashInAmountInputSelector = 'android=new UiSelector().text("0.00")';
     private readonly branchCashInNextButtonSelector = 'android=new UiSelector().text("Next")';
     private readonly branchCashInConfirmButtonSelector = 'android=new UiSelector().resourceId("modal-confirm-button")';
-    private readonly branchCashInCancelConfirmationButtonSelector = 'android=new UiSelector().description("Cancel")';
+    protected readonly branchCashInCancelConfirmationButtonSelector = 'android=new UiSelector().description("Cancel")';
 
     private readonly branchCashInKptnSelector = 'android=new UiSelector().resourceId("0QMRD2")';
     private readonly branchCashInAmountSelector = 'android=new UiSelector().resourceId("08HQ6G")';
-    private readonly branchCashInCancelTransactionButtonSelector = 'android=new UiSelector().resourceId("9PXTAR")';
+    protected readonly branchCashInCancelTransactionButtonSelector = 'android=new UiSelector().resourceId("9PXTAR")';
 
     private readonly goBackButtonSelector = 'android=new UiSelector().description("Go Back")';
     // ===========================================

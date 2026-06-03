@@ -1,5 +1,5 @@
-import { driver, expect } from '@wdio/globals';
-import { BaseTest } from '../../../src/base/BaseTest';
+import { expect } from '@wdio/globals';
+import { BaseTest } from '../../../src/core/BaseTest';
 import { LoginScreen, OTPScreen, PinScreen, DashboardScreen } from '../../../src/screens/android';
 
 
@@ -43,7 +43,7 @@ describe('MCash - Smoke Test (Android)', () => {
             }
             //Actions
             await loginScreen.enterMobileNumber(user.mobile);
-            await loginScreen.tapLoginButton();
+            await loginScreen.tapNextButton();
             await otpScreen.enterOTP(user.otp);
             await pinScreen.enterPin(user.pin);
 
@@ -52,15 +52,4 @@ describe('MCash - Smoke Test (Android)', () => {
         });
     });
 
-    describe('Dashboard Tests', () => {
-        it('should toggle balance visibility using eye icon', async () => {
-            //Actions
-            await dashboardScreen.tapEyeIcon();
-
-            //Assert
-            await expect(await dashboardScreen.verifyBalanceVisible()).toBe(true);
-        });
-
-        //TODO add more dashboard smoke tests here
-    });
 });

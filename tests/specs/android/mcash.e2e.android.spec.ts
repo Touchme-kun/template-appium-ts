@@ -1,5 +1,5 @@
 import { expect } from '@wdio/globals';
-import { BaseTest } from '../../../src/base/BaseTest';
+import { BaseTest } from '../../../src/core/BaseTest';
 import { LoginScreen, OTPScreen, PinScreen, DashboardScreen, CashInScreen } from '../../../src/screens/android';
 import loginTd from '../../../tests/data/login.json';
 

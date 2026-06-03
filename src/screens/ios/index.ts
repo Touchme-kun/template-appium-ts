@@ -2,4 +2,4 @@
  * iOS screens index
  */
 
-export { IOSLoginScreen } from './IOSLoginScreen';
+export { LoginScreen as IOSLoginScreen } from './LoginScreen.ios';

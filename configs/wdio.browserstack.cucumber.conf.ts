@@ -9,8 +9,8 @@ import * as path from 'path';
 import { rootDir } from './wdio.conf';
 import { browser } from '@wdio/globals';
 
-// Load environment variables
-dotenv.config();
+// Load environment variables — TEST_ENV selects the file (e.g. TEST_ENV=qa → .env.qa)
+dotenv.config({ path: path.resolve(process.cwd(), `.env.${process.env.TEST_ENV || 'qa'}`) });
 
 // Build name with timestamp
 const buildName = `BDD-${process.env.BUILD_NUMBER || new Date().toISOString().split('T')[0]}`;

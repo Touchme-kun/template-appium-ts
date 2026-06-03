@@ -1,5 +1,5 @@
 import { $ } from '@wdio/globals';
-import { BaseScreen } from '../BaseScreen';
+import { BaseScreen } from '../../core/BaseScreen';
 import { Logger } from '../../utils/Logger';
 import { AllureReporter } from '../../utils/AllureReporter';
 /**
@@ -196,5 +196,13 @@ export class DashboardScreen extends BaseScreen {
             Logger.error('Balance amount not visible', error as Error);
             return false;
         }
+    }
+
+    async verifyWelcomeMessage(expectedMessage: string): Promise<void> {
+        Logger.step(`Verify welcome message: ${expectedMessage}`);
+        await this.waitForElement(
+            `android=new UiSelector().textContains("${expectedMessage}")`,
+            { timeout: 10000, timeoutMsg: `Welcome message "${expectedMessage}" not found` }
+        );
     }
 }

@@ -1,5 +1,4 @@
-import { $ } from '@wdio/globals';
-import { BaseScreen } from '../BaseScreen';
+import { BaseScreen } from '../../core/BaseScreen';
 import { Logger } from '../../utils/Logger';
 import { AllureReporter } from '../../utils/AllureReporter';
 
@@ -21,9 +20,9 @@ export class OTPScreen extends BaseScreen {
     }
     private readonly inAppOtpSelector = 'android=new UiSelector().text("One Time Pin")';
     private readonly otpContinueButtonSelector = 'android=new UiSelector().resourceId("modal-confirm-button")';
-    private readonly otpCancelButtonSelector = 'android=new UiSelector().description("CANCEL")';
+    protected readonly otpCancelButtonSelector = 'android=new UiSelector().description("CANCEL")';
 
-    private readonly didNotReceiveOtpSelector = 'android=new UiSelector().text("Did not receive OTP?")';
+    protected readonly didNotReceiveOtpSelector = 'android=new UiSelector().text("Did not receive OTP?")';
     
     // ===========================================
     // Actions

@@ -2,8 +2,8 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import type { Environment, Platform } from '../types/framework.types';
 
-// Load environment variables from .env file
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+// Load environment variables — TEST_ENV selects the file (e.g. TEST_ENV=qa → .env.qa)
+dotenv.config({ path: path.resolve(process.cwd(), `.env.${process.env.TEST_ENV || 'qa'}`) });
 
 /**
  * Environment configuration manager
@@ -269,7 +269,9 @@ export class EnvironmentConfig {
     const urls: Record<Environment, string> = {
       dev: 'https://api.dev.example.com',
       staging: 'https://api.staging.example.com',
-      prod: 'https://api.example.com',
+      qa: process.env.BASE_URL || 'https://api.qa.example.com',
+      preprod: process.env.BASE_URL || 'https://api.preprod.example.com',
+      prod: process.env.BASE_URL || 'https://api.example.com',
     };
     return urls[this.testEnvironment];
   }

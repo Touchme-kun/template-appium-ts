@@ -1,5 +1,4 @@
-import { $ } from '@wdio/globals';
-import { BaseScreen } from '../BaseScreen';
+import { BaseScreen } from '../../core/BaseScreen';
 import { Logger } from '../../utils/Logger';
 import { AllureReporter } from '../../utils/AllureReporter';
 

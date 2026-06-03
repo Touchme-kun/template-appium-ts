@@ -3,7 +3,7 @@
  */
 
 import { $ } from '@wdio/globals';
-import { BaseScreen } from '../BaseScreen';
+import { BaseScreen } from '../../core/BaseScreen';
 import { Logger } from '../../utils/Logger';
 
 export class LoginScreen extends BaseScreen {
@@ -13,6 +13,9 @@ export class LoginScreen extends BaseScreen {
   }
 
   // Locator strings
+  private readonly mobileNumberFieldSelector = '//android.widget.EditText[@text="9** *** ****"]")';
+  private readonly nextButtonSelector = 'new UiSelector().className("android.view.ViewGroup").instance(15)';
+
   private readonly usernameFieldSelector = 'android=new UiSelector().resourceId("com.app:id/username_input")';
   private readonly passwordFieldSelector = 'android=new UiSelector().resourceId("com.app:id/password_input")';
   private readonly loginButtonSelector = 'android=new UiSelector().resourceId("208465")';
@@ -24,9 +27,9 @@ export class LoginScreen extends BaseScreen {
   private readonly googleLoginSelector = 'android=new UiSelector().resourceId("com.app:id/google_login")';
   private readonly facebookLoginSelector = 'android=new UiSelector().resourceId("com.app:id/facebook_login")';
 
-  private readonly mobileNumberFieldSelector = 'android=new UiSelector().text("9XX XXX XXXX")';
   private readonly continueButtonSelector = 'android=new UiSelector().resourceId("android:id/button1")';
-  private readonly alertMessageSelector = 'android=new UiSelector().resourceId("android:id/message")';
+  protected readonly alertMessageSelector = 'android=new UiSelector().resourceId("android:id/message")';
+
   // Actions
   async enterUsername(username: string): Promise<void> {
     Logger.step(`Enter username: ${username}`);
@@ -42,6 +45,11 @@ export class LoginScreen extends BaseScreen {
     try{await $(this.continueButtonSelector).click();}catch{Logger.warn('No alert to dismiss');};
     Logger.step(`Enter mobile number: ${mobile}`);
     await this.enterText(this.mobileNumberFieldSelector, mobile);
+  }
+
+  async tapNextButton(): Promise<void> {
+    Logger.step('Tap next button after entering mobile number');
+    await this.tap(this.nextButtonSelector);
   }
 
   async tapLoginButton(): Promise<void> {
@@ -121,6 +129,14 @@ export class LoginScreen extends BaseScreen {
       return await element.isDisplayed();
     } catch {
       return false;
+    }
+  }
+
+  async verifyErrorMessage(expectedError: string): Promise<void> {
+    Logger.step(`Verify error message: ${expectedError}`);
+    const actualError = await this.getErrorMessage();
+    if (!actualError.includes(expectedError)) {
+      throw new Error(`Expected error message to contain "${expectedError}" but got "${actualError}"`);
     }
   }
 }

@@ -2,10 +2,9 @@
  * Android screens index
  */
 
-export { LoginScreen } from './LoginScreen';
-export { OTPScreen } from './OTPScreen';
-export { PinScreen } from './PinScreen';
-export { DashboardScreen } from './DashboardScreen';
-
-export { CashInScreen } from './CashInScreen';
+export { LoginScreen } from './LoginScreen.android';
+export { OTPScreen } from './OTPScreen.android';
+export { PinScreen } from './PinScreen.android';
+export { DashboardScreen } from './DashboardScreen.android';
+export { CashInScreen } from './CashInScreen.android';
  
