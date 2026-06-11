@@ -1,10 +1,8 @@
 /**
  * Android screens index
+ *
+ * Export your screen classes here.
+ * Replace ExampleScreen with your actual screens as you build them.
  */
-
-export { LoginScreen } from './LoginScreen.android';
-export { OTPScreen } from './OTPScreen.android';
-export { PinScreen } from './PinScreen.android';
-export { DashboardScreen } from './DashboardScreen.android';
-export { CashInScreen } from './CashInScreen.android';
+export { ExampleScreen } from './ExampleScreen';
  

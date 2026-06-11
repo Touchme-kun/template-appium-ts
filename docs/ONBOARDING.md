@@ -2,22 +2,20 @@
 
 Welcome to the Mobile Automation Framework team! This checklist will help you get up to speed quickly.
 
-## 📋 Pre-Onboarding Checklist
+## Pre-Onboarding Checklist
 
 ### System Requirements
 - [ ] **Operating System**: Windows 10+, macOS 12+, or Ubuntu 20.04+
 - [ ] **RAM**: Minimum 8GB (16GB recommended for emulators)
 - [ ] **Disk Space**: At least 50GB free space
-- [ ] **Display**: 1920x1080 or higher resolution
 
 ### Required Accounts
 - [ ] GitHub access to the repository
-- [ ] BrowserStack account (request credentials from team lead)
-- [ ] Slack access to #mobile-automation channel
+- [ ] BrowserStack account (optional, for cloud testing)
 
 ---
 
-## 🛠️ Day 1: Environment Setup
+## Day 1: Environment Setup
 
 ### 1. Install Core Tools
 
@@ -61,37 +59,18 @@ emulator -list-avds
 - [ ] Xcode Command Line Tools: `xcode-select --install`
 - [ ] iOS Simulator available
 
-### 3. Install Appium
-
-```bash
-# Install Appium globally
-npm install -g appium@latest
-
-# Install required drivers
-appium driver install uiautomator2
-appium driver install xcuitest
-
-# Verify installation
-appium --version
-appium driver list --installed
-```
-
-- [ ] Appium installed
-- [ ] UiAutomator2 driver installed (Android)
-- [ ] XCUITest driver installed (iOS)
-
-### 4. Clone and Setup Project
+### 3. Clone and Setup Project
 
 ```bash
 # Clone repository
 git clone <repository-url>
-cd "Appium TS"
+cd <project-directory>
 
 # Install dependencies
-npm install --legacy-peer-deps
+npm install
 
 # Copy environment file
-cp .env.example .env
+cp .env.example .env.qa
 
 # Verify build
 npm run build
@@ -104,31 +83,29 @@ npm run lint
 - [ ] Build successful
 - [ ] Lint passes
 
-### 5. VS Code Extensions
+### 4. VS Code Extensions
 
 Install these recommended extensions:
 
 - [ ] ESLint (`dbaeumer.vscode-eslint`)
 - [ ] Prettier (`esbenp.prettier-vscode`)
 - [ ] TypeScript (`ms-vscode.vscode-typescript-next`)
-- [ ] Cucumber (`alexkrechik.cucumberautocomplete`)
-- [ ] GitLens (`eamodio.gitlens`)
 - [ ] Docker (`ms-azuretools.vscode-docker`)
 
 ---
 
-## 📖 Day 2: Framework Understanding
+## Day 2: Framework Understanding
 
 ### 1. Read Documentation
-- [ ] [README.md](./README.md) - Project overview
-- [ ] [docs/README.md](./docs/README.md) - Detailed user guide
-- [ ] [ARCHITECTURE.md](./ARCHITECTURE.md) - Framework design
-- [ ] [CONTRIBUTING.md](./CONTRIBUTING.md) - Contribution guidelines
-- [ ] [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - Common issues
+- [ ] [README.md](../README.md) — Project overview
+- [ ] [Architecture Guide](./architecture.md) — Framework design
+- [ ] [Best Practices](./best-practices.md) — Test writing guidelines
+- [ ] [Contributing Guide](./contributing.md) — Contribution guidelines
+- [ ] [Troubleshooting Guide](./troubleshooting.md) — Common issues
 
 ### 2. Explore Project Structure
 - [ ] Understand folder structure in `src/`
-- [ ] Review base classes in `src/base/`
+- [ ] Review core classes in `src/core/`
 - [ ] Explore screen objects in `src/screens/`
 - [ ] Check utilities in `src/utils/`
 - [ ] Review configurations in `configs/`
@@ -142,7 +119,7 @@ Install these recommended extensions:
 
 ---
 
-## 🧪 Day 3: Running Tests
+## Day 3: Running Tests
 
 ### 1. Run Your First Local Test
 
@@ -161,21 +138,7 @@ npm run test:ios
 - [ ] Ran Android tests locally
 - [ ] Ran iOS tests locally (if on macOS)
 
-### 2. Run BDD (Cucumber) Tests
-
-```bash
-# Run all BDD tests
-npm run test:bdd
-
-# Run with specific tag
-npm run test:cucumber:smoke
-```
-
-- [ ] Ran BDD tests successfully
-- [ ] Understand feature file structure
-- [ ] Understand step definitions
-
-### 3. Generate and View Reports
+### 2. Generate and View Reports
 
 ```bash
 npm run report
@@ -185,11 +148,11 @@ npm run report
 - [ ] Opened and explored report
 - [ ] Located screenshots in failed tests
 
-### 4. Run Tests on BrowserStack
+### 3. Run Tests on BrowserStack
 
 ```bash
-# Ensure .env has BrowserStack credentials
-npm run test:cucumber:dry:browserstack:android
+# Ensure .env.qa has BrowserStack credentials
+npm run test:browserstack:android
 ```
 
 - [ ] Successfully connected to BrowserStack
@@ -198,204 +161,13 @@ npm run test:cucumber:dry:browserstack:android
 
 ---
 
-## ✍️ Day 4: Writing Your First Test
+## Additional Resources
 
-### 1. Create a Simple TDD Test
-
-Create `tests/specs/android/my-first-test.spec.ts`:
-
-```typescript
-import { BaseTest } from '../../../src/base';
-import { LoginScreen } from '../../../src/screens';
-
-describe('My First Test Suite', () => {
-  const loginScreen = new LoginScreen();
-
-  before(async () => {
-    await BaseTest.initializeSuite('My First Tests');
-  });
-
-  it('should display login screen', async () => {
-    await loginScreen.waitForScreen();
-    await expect(loginScreen.usernameField).toBeDisplayed();
-  });
-});
-```
-
-- [ ] Created test file
-- [ ] Ran test successfully
-- [ ] Understood test structure
-
-### 2. Create a Simple BDD Test
-
-Create `tests/features/my-feature.feature`:
-
-```gherkin
-@smoke
-Feature: My First Feature
-
-  Scenario: Verify app launch
-    Given I launch the application
-    Then I should see the login screen
-```
-
-Create step definitions in `tests/features/step-definitions/my-feature.steps.ts`:
-
-```typescript
-import { Given, Then } from '@wdio/cucumber-framework';
-import { LoginScreen } from '../../../src/screens';
-
-const loginScreen = new LoginScreen();
-
-Given('I launch the application', async () => {
-  // App launches automatically
-});
-
-Then('I should see the login screen', async () => {
-  await loginScreen.waitForScreen();
-  await expect(loginScreen.screenContainer).toBeDisplayed();
-});
-```
-
-- [ ] Created feature file
-- [ ] Created step definitions
-- [ ] Ran BDD test successfully
-
-### 3. Create a Page Object
-
-If needed, create a new screen object:
-
-```typescript
-// src/screens/NewScreen.ts
-import { BaseScreen } from './BaseScreen';
-
-export class NewScreen extends BaseScreen {
-  // Define the main screen locator
-  protected get screenLocator(): string {
-    return '~new-screen-container';
-  }
-
-  // Define element locators
-  get headerTitle() {
-    return $('~header-title');
-  }
-
-  // Define actions
-  async verifyScreenLoaded(): Promise<boolean> {
-    await this.waitForScreen();
-    return (await this.headerTitle).isDisplayed();
-  }
-}
-```
-
-- [ ] Created page object class
-- [ ] Exported from `src/screens/index.ts`
-- [ ] Used in a test
+- [Architecture Guide](./architecture.md) — Detailed framework design
+- [Best Practices](./best-practices.md) — Coding and test standards
+- [Log Structure Guide](./log-structure.md) — Logging and log management
+- [Troubleshooting Guide](./troubleshooting.md) — Solutions to common issues
 
 ---
 
-## 🐳 Day 5: Docker & CI/CD
-
-### 1. Run Tests in Docker
-
-```bash
-# Build Docker image
-npm run docker:build
-
-# Run tests in container (BrowserStack)
-npm run docker:browserstack:smoke:qa
-```
-
-- [ ] Built Docker image
-- [ ] Ran containerized tests
-
-### 2. Understand CI/CD Pipeline
-
-Review `.github/workflows/mobile-tests.yml`:
-
-- [ ] Understand workflow triggers
-- [ ] Understand job structure
-- [ ] Understand matrix strategy for devices
-- [ ] Know where artifacts are stored
-- [ ] Understand Allure report deployment
-
-### 3. Create a Pull Request
-
-Make a small change and submit a PR:
-
-```bash
-git checkout -b feature/my-first-contribution
-# Make changes
-git add .
-git commit -m "feat: add my first test"
-git push origin feature/my-first-contribution
-```
-
-- [ ] Created feature branch
-- [ ] Made changes
-- [ ] Pushed and created PR
-- [ ] CI pipeline ran successfully
-
----
-
-## 📚 Recommended Learning Path
-
-### Week 1
-- [ ] Complete all onboarding tasks above
-- [ ] Pair program with a senior team member
-- [ ] Write 2-3 simple test cases
-
-### Week 2
-- [ ] Learn advanced element locators (XPath, CSS)
-- [ ] Master gesture helpers (swipe, scroll, pinch)
-- [ ] Understand wait strategies
-- [ ] Write a complete feature test
-
-### Week 3
-- [ ] Learn visual testing concepts
-- [ ] Understand API test setup utilities
-- [ ] Explore performance measurement
-- [ ] Contribute to existing test coverage
-
-### Week 4
-- [ ] Debug and fix flaky tests
-- [ ] Optimize test execution time
-- [ ] Document your learnings
-- [ ] Present to the team
-
----
-
-## 🆘 Getting Help
-
-### Resources
-- **Documentation**: Check `docs/` folder first
-- **Troubleshooting**: See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
-- **Slack**: Post in #mobile-automation channel
-- **Pair Programming**: Request a session with team members
-
-### Common First-Week Questions
-
-1. **Why is my test flaky?**
-   → Check wait strategies, add explicit waits
-
-2. **How do I find element locators?**
-   → Use Appium Inspector or platform tools
-
-3. **Why won't BrowserStack connect?**
-   → Check `.env` credentials and network
-
-4. **How do I debug a failing test?**
-   → Check logs, screenshots, and Allure report
-
----
-
-## ✅ Onboarding Completion
-
-Once you've completed all items:
-
-- [ ] Submit completed checklist to team lead
-- [ ] Schedule 1:1 to discuss learning experience
-- [ ] Identify areas for framework improvement
-- [ ] Start assigned test automation tasks
-
-**Congratulations! You're now ready to contribute to the Mobile Automation Framework! 🎉**
+*Last Updated: June 2026*

@@ -1,0 +1,41 @@
+{
+    "tiers": [
+        {
+            "tier": "Buyer",
+            "mobileNumber": "9999999996",
+            "pin": "1234"
+        },
+        {
+            "tier": "Semi-Verified",
+            "mobileNumber": "",
+            "pin": ""
+        },
+        {
+            "tier": "Fully-Verified",
+            "mobileNumber": "9999999996",
+            "pin": "1234",
+            "Birthday": [
+                {
+                    "Month": "JAN",
+                    "DAY": "20",
+                    "YEAR": "1990"
+                }
+            ]
+        },
+        {
+            "tier": "Employee",
+            "mobileNumber": "",
+            "pin": ""
+        },
+        {
+            "tier": "Mancom",
+            "mobileNumber": "",
+            "pin": ""
+        },
+        {
+            "tier": "Sipip-Employee",
+            "mobileNumber": "",
+            "pin": ""
+        }
+    ]
+}

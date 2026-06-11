@@ -5,6 +5,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { Logger } from '../src/utils/Logger';
 
 const ALLURE_RESULTS_DIR = path.resolve(process.cwd(), 'allure-results');
 const ALLURE_REPORT_DIR = path.resolve(process.cwd(), 'allure-report');
@@ -19,7 +20,7 @@ function preserveHistory(): void {
   const historyTargetDir = path.join(ALLURE_RESULTS_DIR, 'history');
 
   if (fs.existsSync(historySourceDir)) {
-    console.log('Preserving Allure history from previous report...');
+    Logger.info('Preserving Allure history from previous report...');
 
     // Create target directory if it doesn't exist
     if (!fs.existsSync(historyTargetDir)) {
@@ -34,13 +35,13 @@ function preserveHistory(): void {
 
       if (fs.statSync(sourcePath).isFile()) {
         fs.copyFileSync(sourcePath, targetPath);
-        console.log(`  Copied: ${file}`);
+        Logger.debug(`  Copied: ${file}`);
       }
     });
 
-    console.log('History preserved successfully.');
+    Logger.info('History preserved successfully.');
   } else {
-    console.log('No previous history found. Starting fresh.');
+    Logger.info('No previous history found. Starting fresh.');
   }
 }
 
@@ -81,11 +82,11 @@ function ensureCategories(): void {
   ];
 
   if (!fs.existsSync(CATEGORIES_FILE)) {
-    console.log('Creating default categories.json...');
+    Logger.info('Creating default categories.json...');
     fs.writeFileSync(CATEGORIES_FILE, JSON.stringify(defaultCategories, null, 2), 'utf8');
-    console.log('categories.json created.');
+    Logger.info('categories.json created.');
   } else {
-    console.log('categories.json already exists.');
+    Logger.info('categories.json already exists.');
   }
 }
 
@@ -98,7 +99,7 @@ function cleanResults(): void {
     return;
   }
 
-  console.log('Cleaning old Allure results...');
+  Logger.info('Cleaning old Allure results...');
 
   const files = fs.readdirSync(ALLURE_RESULTS_DIR);
   files.forEach((file) => {
@@ -117,7 +118,7 @@ function cleanResults(): void {
     }
   });
 
-  console.log('Old results cleaned.');
+  Logger.info('Old results cleaned.');
 }
 
 /**
@@ -135,7 +136,7 @@ function generateExecutorInfo(): void {
 
   const executorPath = path.join(ALLURE_RESULTS_DIR, 'executor.json');
   fs.writeFileSync(executorPath, JSON.stringify(executorInfo, null, 2), 'utf8');
-  console.log('executor.json generated.');
+  Logger.info('executor.json generated.');
 }
 
 /**

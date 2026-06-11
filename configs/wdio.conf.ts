@@ -3,6 +3,7 @@ import { browser } from '@wdio/globals';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import * as fs from 'fs';
+import { Logger } from '../src/utils/Logger';
 
 // Load environment variables — TEST_ENV selects the file (e.g. TEST_ENV=qa → .env.qa)
 dotenv.config({ path: path.resolve(process.cwd(), `.env.${process.env.TEST_ENV || 'qa'}`) });
@@ -15,28 +16,39 @@ export const rootDir = path.resolve(__dirname, '..');
  * This configuration serves as the foundation for all platform-specific configs
  */
 export const config: Options.Testrunner & { capabilities: Capabilities.TestrunnerCapabilities } = {
-  //
   // ====================
   // Runner Configuration
   // ====================
   runner: 'local',
   tsConfigPath: path.join(rootDir, 'tsconfig.json'),
 
-  //
   // ==================
   // Specify Test Files
   // ==================
-  specs: [path.join(rootDir, 'tests/specs/**/*.spec.ts')],
+  specs: [path.join(rootDir, 'src/tests/specs/**/*.spec.ts')],
   exclude: [],
 
-  //
+  // =====================
+  // Target Suite Mappings
+  // =====================
+  suites: {
+    smoke: [
+      path.join(rootDir, 'src/tests/specs/android/smoke.android.spec.ts')
+    ],
+    regression: [
+      path.join(rootDir, 'src/tests/specs/android/regression.android.spec.ts')
+    ],
+    e2e: [
+      path.join(rootDir, 'src/tests/specs/android/e2e.android.spec.ts')
+    ]
+  },
+
   // ============
   // Capabilities
   // ============
   maxInstances: 1,
   capabilities: [],
 
-  //
   // ===================
   // Test Configurations
   // ===================
@@ -47,7 +59,6 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
   connectionRetryTimeout: 120000,
   connectionRetryCount: 3,
 
-  //
   // ==============
   // Test Framework
   // ==============
@@ -55,30 +66,8 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
   mochaOpts: {
     ui: 'bdd',
     timeout: 120000,
-    // Note: ts-node/register not needed in WDIO v9 - uses tsx internally
   },
 
-  //
-  // ===================
-  // Cucumber Framework (alternative)
-  // ===================
-  // Uncomment to use Cucumber instead of Mocha
-  // framework: 'cucumber',
-  // cucumberOpts: {
-  //   require: ['./tests/features/step-definitions/**/*.ts'],
-  //   backtrace: false,
-  //   requireModule: ['ts-node/register'],
-  //   dryRun: false,
-  //   failFast: false,
-  //   snippets: true,
-  //   source: true,
-  //   strict: false,
-  //   tagExpression: '',
-  //   timeout: 120000,
-  //   ignoreUndefinedDefinitions: false,
-  // },
-
-  //
   // =========
   // Reporters
   // =========
@@ -97,7 +86,6 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
     ],
   ],
 
-  //
   // ========
   // Services
   // ========
@@ -111,12 +99,11 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
           relaxedSecurity: true,
           allowInsecure: ['chromedriver_autodownload'],
         },
-        logPath: path.join(rootDir, 'logs'),
+        logPath: path.join(rootDir, 'log'), // Standardized directory mapping
       },
     ],
   ],
 
-  //
   // =====
   // Hooks
   // =====
@@ -124,10 +111,10 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
    * Gets executed once before all workers get launched.
    */
   onPrepare: function () {
-    console.log('========================================');
-    console.log('Starting Mobile Automation Test Suite');
-    console.log(`Timestamp: ${new Date().toISOString()}`);
-    console.log('========================================');
+    Logger.info('========================================');
+    Logger.info('Starting Mobile Automation Test Suite');
+    Logger.info(`Timestamp: ${new Date().toISOString()}`);
+    Logger.info('========================================');
 
     // Ensure screenshots directory exists
     const screenshotsDir = path.join(rootDir, 'reports', 'screenshots');
@@ -138,7 +125,7 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
     // Copy categories.json to allure-results if it exists
     const categoriesSource = path.join(rootDir, 'allure-results', 'categories.json');
     if (fs.existsSync(categoriesSource)) {
-      console.log('Allure categories.json found and ready');
+      Logger.info('Allure categories.json found and ready');
     }
   },
 
@@ -146,21 +133,19 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
    * Gets executed before a worker process is spawned
    */
   onWorkerStart: function (cid, _caps, specs) {
-    console.log(`Worker ${cid} starting for specs: ${specs}`);
+    Logger.info(`Worker ${cid} starting for specs: ${specs}`);
   },
 
   /**
    * Gets executed before test execution begins
    */
   before: async function () {
-    // Dynamically import to avoid issues during compilation
     const { Logger } = await import('../src/utils/Logger');
     const { AllureReporter } = await import('../src/utils/AllureReporter');
 
     // Initialize reporting
     AllureReporter.initialize();
     
-    // Log session start
     Logger.info('Test session starting...');
     Logger.info(`Run ID: ${Logger.getRunId()}`);
 
@@ -177,7 +162,6 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
     const { AllureReporter } = await import('../src/utils/AllureReporter');
     const { DeviceLogsHelper } = await import('../src/utils/DeviceLogsHelper');
 
-    // Set test context for logging
     Logger.testStart(test.title);
     AllureReporter.markTestStart();
 
@@ -193,7 +177,6 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
     const { AllureReporter } = await import('../src/utils/AllureReporter');
     const { DeviceLogsHelper } = await import('../src/utils/DeviceLogsHelper');
 
-    // Log test completion
     Logger.testEnd(test.title, passed, duration);
 
     // On failure, capture all debugging artifacts
@@ -232,7 +215,6 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
       }
     }
 
-    // Add execution time
     AllureReporter.addExecutionTime();
   },
 
@@ -241,8 +223,6 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
    */
   afterSuite: async function (suite) {
     const { Logger } = await import('../src/utils/Logger');
-    
-    // Log suite completion - stats are tracked by the spec reporter
     Logger.suiteEnd(suite.title || 'Unknown Suite', 0, 0, 0);
   },
 
@@ -253,7 +233,6 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
     const { Logger } = await import('../src/utils/Logger');
     const { AllureReporter } = await import('../src/utils/AllureReporter');
 
-    // Log performance summary
     Logger.logPerformanceSummary();
 
     // Attach full test run logs to Allure
@@ -269,24 +248,14 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
    * Gets executed after all workers got shut down
    */
   onComplete: function (exitCode) {
-    console.log('========================================');
-    console.log('Test Suite Execution Complete');
-    console.log(`Exit Code: ${exitCode}`);
-    console.log(`Timestamp: ${new Date().toISOString()}`);
-    console.log('========================================');
-    console.log('Run "npm run allure:generate" to generate Allure report');
-    console.log('Run "npm run allure:open" to view the report');
-  },
-
-  /**
-   * Cucumber specific hooks
-   */
-  // beforeFeature: async function (uri, feature) {},
-  // beforeScenario: async function (world, context) {},
-  // beforeStep: async function (step, scenario, context) {},
-  // afterStep: async function (step, scenario, result, context) {},
-  // afterScenario: async function (world, result, context) {},
-  // afterFeature: async function (uri, feature) {},
+    Logger.info('========================================');
+    Logger.info('Test Suite Execution Complete');
+    Logger.info(`Exit Code: ${exitCode}`);
+    Logger.info(`Timestamp: ${new Date().toISOString()}`);
+    Logger.info('========================================');
+    Logger.info('Run "npm run allure:generate" to generate Allure report');
+    Logger.info('Run "npm run allure:open" to view the report');
+  }
 };
 
 export default config;

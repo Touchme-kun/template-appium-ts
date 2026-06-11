@@ -46,7 +46,7 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
   // =============
   // Test Settings
   // =============
-  logLevel: (process.env.LOG_LEVEL as Options.WebDriverLogTypes) || 'info',
+  logLevel: (process.env.LOG_LEVEL as Options.WebDriverLogTypes) || 'warn',
   outputDir: './logs',
 
   //

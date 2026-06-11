@@ -433,7 +433,7 @@ try {
 **Use GestureHelper for mobile-specific gestures:**
 
 ```typescript
-import { GestureHelper } from '../../src/helpers/GestureHelper';
+import { GestureHelper } from '../../src/utils/GestureHelper';
 
 // ✅ Swipe gestures
 await GestureHelper.swipeUp();

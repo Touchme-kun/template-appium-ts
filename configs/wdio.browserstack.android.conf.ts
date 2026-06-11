@@ -60,7 +60,7 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
   maxInstances: 5,
   capabilities,
 
-  logLevel: (process.env.LOG_LEVEL as Options.WebDriverLogTypes) || 'info',
+  logLevel: (process.env.LOG_LEVEL as Options.WebDriverLogTypes) || 'warn',
   bail: 0,
   baseUrl: process.env.BASE_URL || '',
   waitforTimeout: 30000,

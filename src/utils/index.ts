@@ -11,3 +11,5 @@ export * from './PerformanceUtil';
 export * from './DeviceLogsHelper';
 export * from './StringUtil';
 export * from './FileUtil';
+export * from './GestureHelper';
+export * from './WaitHelper';

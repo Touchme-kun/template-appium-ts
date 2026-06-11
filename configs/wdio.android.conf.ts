@@ -2,6 +2,7 @@ import { config as baseConfig, rootDir } from './wdio.conf';
 import { browser } from '@wdio/globals';
 import type { Options, Capabilities } from '@wdio/types';
 import * as path from 'path';
+import { Logger } from '../src/utils/Logger';
 
 /**
  * Android-specific WebdriverIO Configuration
@@ -27,7 +28,7 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
     {
       // Platform options
       platformName: 'Android',
-      'appium:platformVersion': process.env.ANDROID_PLATFORM_VERSION || '13',
+      'appium:platformVersion': process.env.ANDROID_PLATFORM_VERSION || '16',
       'appium:deviceName': process.env.ANDROID_DEVICE_NAME || 'Pixel_7_API_33',
       'appium:automationName': 'UiAutomator2',
 
@@ -53,7 +54,7 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
       'appium:autoWebview': false,
 
       // Logging
-      'appium:enablePerformanceLogging': true,
+      'appium:enablePerformanceLogging': false, // -> disable for logcat noise
 
       // Wait options
       'wdio:maxInstances': 1,
@@ -86,7 +87,8 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
   // ===================
   before: async function () {
     // Wait for app to be ready
-    console.log('Android test session starting...');
+    Logger.info('Android test session starting...');
+    await browser.hideKeyboard();
 
     // Add Android-specific setup here
     await browser.pause(2000); // Allow app to fully load
@@ -103,9 +105,9 @@ export const config: Options.Testrunner & { capabilities: Capabilities.Testrunne
 
         // Capture logcat for debugging
         // const logs = await browser.getLogs('logcat');
-        // console.log('Logcat entries:', logs.length);
+        // Logger.debug('Logcat entries:', logs.length);
       } catch (e) {
-        console.log('Failed to capture screenshot or logs:', e);
+        Logger.error('Failed to capture screenshot or logs:', e as Error);
       }
     }
   },

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "commonjs",
+    "module": "node16",
     "lib": [
       "ES2022"
     ],
@@ -15,8 +15,7 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "moduleResolution": "node",
-    "ignoreDeprecations": "6.0",
+    "moduleResolution": "node16",
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
@@ -30,32 +29,28 @@
     "noFallthroughCasesInSwitch": true,
     "types": [
       "node",
-      "@wdio/globals",
+      "@wdio/globals/types",
       "@wdio/mocha-framework",
       "expect-webdriverio"
     ],
-    "baseUrl": ".",
     "paths": {
       "@core/*": [
-        "src/core/*"
+        "./src/core/*"
       ],
       "@config/*": [
-        "src/config/*"
+        "./configs/*"
       ],
       "@screens/*": [
-        "src/screens/*"
+        "./src/screens/*"
       ],
       "@utils/*": [
-        "src/utils/*"
-      ],
-      "@helpers/*": [
-        "src/helpers/*"
+        "./src/utils/*"
       ],
       "@types/*": [
-        "src/types/*"
+        "./src/types/*"
       ],
       "@data/*": [
-        "tests/data/*"
+        "./src/tests/data/*"
       ]
     }
   },

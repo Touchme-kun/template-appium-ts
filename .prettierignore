@@ -1,7 +1,22 @@
-node_modules
-dist
-allure-results
-allure-report
-reports
-logs
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+dist/
+
+# Reports & Logs
+allure-results/
+allure-report/
+reports/
+logs/
 *.log
+
+# Mobile Apps (Binaries)
+apps/
+*.apk
+*.ipa
+*.app
+
+# OS Files
+.DS_Store

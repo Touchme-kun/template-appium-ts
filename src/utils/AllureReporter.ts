@@ -4,11 +4,6 @@ import { Logger } from './Logger';
 import * as fs from 'fs';
 import * as path from 'path';
 
-// Type assertion for allure methods not in type definitions
-const allureReporter = allure as typeof allure & {
-  addEnvironment: (key: string, value: string) => void;
-};
-
 /**
  * Severity levels for test categorization
  */
@@ -93,7 +88,6 @@ export class AllureReporter {
    * Add environment information
    */
   static addEnvironment(key: string, value: string): void {
-    allureReporter.addEnvironment(key, value);
   }
 
   /**
@@ -159,25 +153,6 @@ export class AllureReporter {
    */
   static async addDeviceInfo(): Promise<void> {
     try {
-      const caps = browser.capabilities as Record<string, unknown>;
-
-      allureReporter.addEnvironment('Platform', String(caps.platformName || 'Unknown'));
-      allureReporter.addEnvironment('Platform Version', String(caps.platformVersion || 'Unknown'));
-      allureReporter.addEnvironment('Device Name', String(caps.deviceName || caps['appium:deviceName'] || 'Unknown'));
-      allureReporter.addEnvironment(
-        'Automation Name',
-        String(caps.automationName || caps['appium:automationName'] || 'Unknown')
-      );
-
-      // Additional device details
-      if (caps['appium:udid']) {
-        allureReporter.addEnvironment('Device UDID', String(caps['appium:udid']));
-      }
-      if (caps['browserstack:options']) {
-        const bsOptions = caps['browserstack:options'] as Record<string, unknown>;
-        allureReporter.addEnvironment('BrowserStack Build', String(bsOptions.buildName || 'N/A'));
-        allureReporter.addEnvironment('BrowserStack Session', String(bsOptions.sessionName || 'N/A'));
-      }
     } catch (error) {
       Logger.warn('Could not add device info to Allure report');
     }

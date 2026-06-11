@@ -1,0 +1,28 @@
+{
+    "users": {
+        "validUser": {
+            "email": "testuser@example.com",
+            "password": "SecurePass123",
+            "firstName": "Test",
+            "lastName": "User"
+        },
+        "invalidUser": {
+            "email": "invalid@example.com",
+            "password": "wrongpass"
+        }
+    },
+    "environments": {
+        "dev": {
+            "baseUrl": "https://dev.example.com",
+            "apiUrl": "https://api.dev.example.com"
+        },
+        "staging": {
+            "baseUrl": "https://staging.example.com",
+            "apiUrl": "https://api.staging.example.com"
+        },
+        "prod": {
+            "baseUrl": "https://www.example.com",
+            "apiUrl": "https://api.example.com"
+        }
+    }
+}

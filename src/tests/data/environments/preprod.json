@@ -1,0 +1,4 @@
+{
+    "baseUrl": "https://preprod.example.com",
+    "apiUrl": "https://api.preprod.example.com"
+}
